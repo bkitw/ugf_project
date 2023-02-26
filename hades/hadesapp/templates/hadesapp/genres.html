@@ -1,0 +1,54 @@
+{%extends 'hadesapp/base.html'%}
+{%load static%}
+{%block content%}
+<h1>Genres_page</h1>
+
+<div class="container text-center">
+    <div class="row">
+        {%if hidden%}
+        <div class="col" hidden="">
+            {%else%}
+            <div class="col">
+                {%endif%}
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Genre</th>
+                        {% if request.user.is_staff %}
+                        <th scope="col">Update</th>
+                        <th scope="col">Delete</th>
+                        {%endif%}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {%for genre in genres%}
+                    <tr>
+                        <th scope="row">{{genre.id}}</th>
+                        <td>{{genre}}</td>
+                        {% if request.user.is_staff %}
+                        <td><a href="{%url 'update_genre' genre.slug %}">update</a></td>
+                        <td><a href="{%url 'delete_genre' genre.slug %}">delete</a></td>
+                        {%endif%}
+                    </tr>
+                    {%endfor%}
+                    </tbody>
+                </table>
+            </div>
+{% if request.user.is_staff %}
+            <div class="col">
+                <form method="post" action="">
+                    {%csrf_token%}
+                    {% for form in form%}
+                    <ul class="list-group">
+                        <li class="list-group-item" >{{form.label}}: {{form}}</li>
+                    </ul>
+                    {%endfor%}
+                    <input type="submit" name="Submit">
+                </form>
+            </div>
+            {%endif%}
+        </div>
+    </div>
+</div>
+{%endblock%}

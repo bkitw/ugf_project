@@ -1,0 +1,13 @@
+{%extends 'hadesapp/base.html'%}
+{%load static%}
+{%block content%}
+<div class="alert alert-danger" style="width:45%" role="alert">
+  Are you sure you want to delete "{{item}}"?
+</div>
+<form action="{%url 'delete_developer' item.slug%}" method="post">
+    {%csrf_token%}
+
+    <a href="{%url 'main'%}">Cancel</a>
+    <input type="submit" name="Confirm">
+</form>
+{%endblock%}

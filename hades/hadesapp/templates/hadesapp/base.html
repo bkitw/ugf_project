@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+{%load static%}
+<html lang="en, ua">
+<head>
+    <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Play&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{%static '/css/bootstrap.min.css'%}">
+    <link rel="stylesheet" type="text/css" href="{%static '/css/custom_css.css'%}">
+    <title>{{title}}</title>
+</head>
+<body>
+<!--Here goes the header-->
+{%include 'hadesapp/components/header_navbar.html'%}
+{%block content%}
+<!--Here goes main content-->
+{%endblock%}
+<!--Here goes footer-->
+<!--{%include 'hadesapp/components/footer.html'%}-->
+</body>
+<script src="../../static/js/bootstrap.bundle.min.js"></script>
+</html>

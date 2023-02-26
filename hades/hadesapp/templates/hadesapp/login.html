@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+{%load static%}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Play&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{%static '/css/bootstrap.min.css'%}">
+    <link rel="stylesheet" type="text/css" href="{%static '/css/custom_css.css'%}">
+    <title>{{title}}</title>
+</head>
+<body>
+<header style="margin-top:2%">
+    <div class="container" style="margin-bottom:2%">
+        <a class="navbar-brand" href="#" style="margin-left: 45%; margin-top:7px;"><img
+                src="{%static '/images/logo.png'%}"
+                alt="logo.png"
+                width="100" height="50"></a>
+    </div>
+</header>
+<div class="center-block col-md-6" style="margin:auto; border:solid;border-width:1px;
+border-radius:20px; padding:2%;">
+    <h2>Logging in on UGF:</h2>
+    <form method="POST" action="" style="width:100%">
+        {% csrf_token %}
+        <fieldset>
+            {%for message in messages%}
+            <div class="alert alert-warning" role="alert" style="width:96%">
+                {{message}}
+            </div>
+            {%endfor%}
+            <div class="input-group flex-nowrap reg-forms" style="width:95%">
+                <span class="input-group-text" style="width:110px">Username</span>
+                <input type="text" name="username" class="form-control" required="">
+            </div>
+            <div class="input-group flex-nowrap reg-forms" style="width:95%">
+                <span class="input-group-text" style="width:110px">Password</span>
+                <input type="password" name="password" class="form-control" required=""/>
+            </div>
+            <button class="button-89" role="button">Let Me In</button>
+            <p>Haven't registered yet? <b>|</b> <a href="{% url 'registration'%}"> Sign Up</a></p>
+        </fieldset>
+    </form>
+</div>

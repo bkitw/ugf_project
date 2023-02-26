@@ -1,0 +1,62 @@
+{%extends 'hadesapp/base.html'%}
+{%load static%}
+{%block content%}
+<h1>Games_page</h1>
+
+<div class="container text-center">
+    <div class="row">
+        {%if hidden%}
+        <div class="col" hidden="">
+            {%else%}
+            <div class="col">
+                {%endif%}
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Game</th>
+                        <th scope="col">Release date</th>
+                        <th scope="col">Update</th>
+                        <th scope="col">Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {%for game in game%}
+                    <tr>
+                        <th scope="row">{{game.id}}</th>
+                        <td><a href="{%url 'game_page' game.slug%}">{{game}}</a></td>
+                        <td>{{game.date_of_release}}</td>
+                        <td><a href="{%url 'update_game' game.slug %}">update</a></td>
+                        <td><a href="{%url 'delete_game' game.slug %}">delete</a></td>
+                    </tr>
+                    {%endfor%}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col">
+                <form method="post" action="" enctype="multipart/form-data">
+                    {%csrf_token%}
+                    {{game_form.as_p}}
+                    {{attachment_form.as_p}}
+<!--                    <ul class="list-group">-->
+<!--                        <li class="list-group-item">{{game_form.name.label}} : {{game_form.name}}</li>-->
+<!--                        <li class="list-group-item">{{game_form.slug.label}} : {{game_form.slug}}</li>-->
+<!--                        <li class="list-group-item">{{game_form.date_of_release.label}} : {{game_form.date_of_release}}</li>-->
+<!--                        <li class="list-group-item">{{game_form.description.label}} : {{game_form.description}}</li>-->
+<!--                        <li class="list-group-item">{{game_form.developer.label}} : {{game_form.developer}}</li>-->
+<!--                        <li class="list-group-item">{{game_form.genres.label}} : {{game_form.genres}}</li>-->
+<!--                    </ul>-->
+<!--                    <br>-->
+<!--                    <h3>Add an image to the game:</h3>-->
+<!--                    <ul class="list-group">-->
+<!--                        <li class="list-group-item">{{attachment_form.game_image}}</li>-->
+<!--                    </ul>-->
+                    <input type="submit" name="Submit">
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+{%endblock%}

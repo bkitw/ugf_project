@@ -1,0 +1,15 @@
+{%extends 'hadesapp/base.html'%}
+{%load static%}
+{%block content%}
+<div class="container">
+    <div class="card" style="width: 18rem;">
+        <img src="{%static 'media'%}/{{img_path}}" class="card-img-top" alt="alt_game_image.jpeg">
+        <div class="card-body">
+            <h5 class="card-title">{{game.name}} ({{game.date_of_release}})</h5>
+            <p class="card-text">{{game.description}}</p>
+            <a href="{%url 'games'%}" class="btn btn-primary">Go Back</a>
+        </div>
+    </div>
+</div>
+
+{%endblock%}
