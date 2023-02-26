@@ -69,7 +69,7 @@ class UpdateCustomUserForm(UserChangeForm):
     email = forms.EmailField(required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
     first_name = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
     last_name = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
-    date_of_birth = forms.DateField(required=False)
+    date_of_birth = forms.DateField(required=False, widget=forms.DateInput(attrs={'type': 'date'}))
     about_me = forms.CharField(widget=forms.Textarea(attrs={"rows":"5", 'class': 'form-control'}))
 
     def __init__(self, *args, **kwargs):
