@@ -1,6 +1,17 @@
 {%extends 'hadesapp/base.html'%}
 {%load static%}
 {%block content%}
+<style>
+    .avatar {
+  vertical-align: middle;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+
+
+</style>
 <h1>
     subscriptions_page
 </h1>
@@ -17,7 +28,9 @@
                         {%for following in profile.followers.all%}
                         <ul>
                             <li><a href="{%url 'user_profile' following %}"
-                                   class="list-group-item list-group-item-action list-group-item-info">{{following}}</a>
+                                   class="list-group-item list-group-item-action list-group-item-info">
+                                <img src="{%static 'media'%}/{{following.profile_pic}}" class="avatar" alt="user_pic">
+                                {{following}}</a>
                             </li>
                         </ul>
                         {%endfor%}
@@ -34,7 +47,9 @@
                         {%for following in profile.followed_by.all%}
                         <ul>
                             <li><a href="{%url 'user_profile' following %}"
-                                   class="list-group-item list-group-item-action list-group-item-info">{{following}}</a>
+                                   class="list-group-item list-group-item-action list-group-item-info">
+                                <img src="{%static 'media'%}/{{following.profile_pic}}" class="avatar" alt="user_pic">
+                                {{following}}</a>
                             </li>
                         </ul>
                         {%endfor%}
