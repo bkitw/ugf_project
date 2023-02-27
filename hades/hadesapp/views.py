@@ -67,7 +67,6 @@ Developers CRUD started.
 
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admins', 'custom_users'])
 def developers(request):
     devs = Developer.objects.all()
     form = DeveloperForm()
@@ -116,7 +115,6 @@ Games CRUD started.
 
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admins', 'custom_users'])
 def games(request):
     game = Game.objects.all()
     game_form = GameForm()
@@ -130,12 +128,10 @@ def games(request):
             new_saved_game = game_form.save()
             new_attachment = attachment_form.save(commit=False)
             new_attachment.game = new_saved_game
-            # attachment_form.cleaned_data['game'] = new_saved_game
-            # print(type(new_saved_game))
-            # print(attachment_form.clean())
             new_attachment.save()
             return redirect('games')
-    context = {'title': 'UGF | Games', 'game_form': game_form, 'game': game, 'attachment_form': attachment_form}
+    context = {'title': 'UGF | Games', 'game_form': game_form, 'game': game, 'attachment_form': attachment_form,
+               }
     return render(request, 'hadesapp/games.html', context)
 
 
@@ -187,7 +183,6 @@ Genres CRUD started.
 
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admins', 'custom_users'])
 def genres(request):
     genres = Genre.objects.all()
     form = GenreForm()
@@ -197,7 +192,7 @@ def genres(request):
         if form.is_valid():
             form.save()
             return redirect('genres')
-    context = {'title': 'UGF | Genres', 'form': form, 'genres': genres}
+    context = {'title': 'UGF | Genres', 'form': form, 'genres': genres,}
     return render(request, 'hadesapp/genres.html', context)
 
 
@@ -237,19 +232,16 @@ Genres CRUD finished.
 def game_page(request, slug):
     game = Game.objects.get(slug=slug)
     image = GameAttachments.objects.get(game=game)
-    context = {'title': f'UGF | {game.name}', 'game': game, 'img_path': image.game_image}
+    context = {'title': f'UGF | {game.name}', 'game': game, 'img_path': image.game_image, }
     return render(request, 'hadesapp/game_page.html', context)
 
 
 @allowed_users(allowed_roles=['admins', 'custom_users', 'newbies'])
 def user_profile(request, pk):
     user = CustomUser.objects.get(username=pk)
-    edit = True
+    main_user = True
     if user.username != request.user.username:
-        print(user.username)
-        print(request.user.username)
-        edit = False
-        print('edit is false', edit)
+        main_user = False
     date_of_registration = user.date_joined.date()
     today = date.today()
     days_on_site = today - date_of_registration
@@ -260,7 +252,7 @@ def user_profile(request, pk):
         'date_of_birth': user.date_of_birth, 'about_me': user.about_me,
         'gender': user.gender, 'date_of_registration': date_of_registration,
         'today': today, 'days_on_site': days_on_site.days,
-        'edit': edit,
+        'main_user': main_user,
     }
     return render(request, 'hadesapp/user_profile.html', context)
 

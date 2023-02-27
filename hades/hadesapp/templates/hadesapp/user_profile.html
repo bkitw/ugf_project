@@ -28,9 +28,11 @@
                                         <h4>{{username}}</h4>
                                         <!--                                        <p class="text-secondary mb-1">{{first_name}} {{last_name}}</p>-->
                                         <p class="text-muted font-size-sm">On <b>UGF</b> about {{days_on_site}} days</p>
+                                        {%if main_user%}
                                         <a href="{%url 'logout'%}">
                                             <button class="btn btn-outline-danger">Logout</button>
                                         </a>
+                                        {%endif%}
                                     </div>
                                 </div>
                             </div>
@@ -96,7 +98,7 @@
                                 <hr>
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        {%if edit%}
+                                        {%if main_user%}
                                         <a class="btn btn-info " target="__blank"
                                            href="{%url 'update_user_profile' request.user.username%}">Edit</a>
                                         {%endif%}
