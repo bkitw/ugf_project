@@ -15,8 +15,10 @@
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Developer</th>
+                        {%if request.user.is_staff%}
                         <th scope="col">Update</th>
                         <th scope="col">Delete</th>
+                        {%endif%}
                     </tr>
                     </thead>
                     <tbody>
@@ -24,14 +26,16 @@
                     <tr>
                         <th scope="row">{{dev.id}}</th>
                         <td>{{dev}}</td>
+                        {%if request.user.is_staff%}
                         <td><a href="{%url 'update_developer' dev.slug %}">update</a></td>
                         <td><a href="{%url 'delete_developer' dev.slug %}">delete</a></td>
+                        {%endif%}
                     </tr>
                     {%endfor%}
                     </tbody>
                 </table>
             </div>
-
+            {%if request.user.is_staff%}
             <div class="col">
                 <form method="post" action="">
                     {%csrf_token%}
@@ -43,6 +47,7 @@
                     <input type="submit" name="Submit">
                 </form>
             </div>
+            {%endif%}
         </div>
     </div>
 </div>

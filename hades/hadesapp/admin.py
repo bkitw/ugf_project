@@ -18,7 +18,8 @@ class CustomUserAdmin(DjangoUserAdmin):
                 'fields': (
                     'date_of_birth',
                     'gender',
-                    'about_me'
+                    'about_me',
+                    'subscribers',
                 ),
             },
         ),
