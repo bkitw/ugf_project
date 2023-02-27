@@ -34,7 +34,7 @@ def registration_page(request):
             user = form.save()
             username = form.cleaned_data.get('username')
             return redirect("login")
-    context = {'form': form, 'title': 'UGF | SignIn'}
+    context = {'form': form, 'title': 'UGF | SignIn', }
     return render(request, 'hadesapp/registration.html', context)
 
 
@@ -245,7 +245,7 @@ def user_profile(request, pk):
     date_of_registration = profile.date_joined.date()
     today = date.today()
     days_on_site = today - date_of_registration
-    print(request.user.followers.all())
+    profile_pic = profile.profile_pic
     context = {
         'title': f'UGF | {profile.username}',
         'username': profile.username, 'first_name': profile.first_name,
@@ -253,7 +253,7 @@ def user_profile(request, pk):
         'date_of_birth': profile.date_of_birth, 'about_me': profile.about_me,
         'gender': profile.gender, 'date_of_registration': date_of_registration,
         'today': today, 'days_on_site': days_on_site.days,
-        'main_user': main_user, 'profile': profile
+        'main_user': main_user, 'profile': profile, 'profile_pic': profile_pic
     }
     return render(request, 'hadesapp/user_profile.html', context)
 
@@ -265,12 +265,24 @@ def update_user_profile(request, pk):
     date_of_registration = user.date_joined.date()
     today = date.today()
     days_on_site = today - date_of_registration
+    profile_pic = user.profile_pic
     if request.method == 'POST':
-        form = UpdateCustomUserForm(request.POST, instance=user)
+        form = UpdateCustomUserForm(request.POST, request.FILES, instance=user)
         if form.is_valid():
-            form.save()
+            updated_profile = form.save(commit=False)
+            picture_for_delete = profile_pic
+            filename = Path(f'{settings.MEDIA_ROOT}\\{picture_for_delete}'.replace('/', '\\'))
+            try:
+                if str(filename).endswith('\\images\\defaults\\profile_pic\\default_logo.png'):
+                    pass
+                else:
+                    filename.unlink()
+            except FileNotFoundError as err:
+                print(err)
+            updated_profile.save()
             return redirect('user_profile', form.cleaned_data.get('username'))
-    context = {'form': form, 'days_on_site': days_on_site.days, 'title': f'UGF | {user.username}', }
+    context = {'form': form, 'days_on_site': days_on_site.days, 'title': f'UGF | {user.username}',
+               'profile_pic': profile_pic}
     return render(request, 'hadesapp/update_user_profile.html', context)
 
 
@@ -279,8 +291,6 @@ def update_user_profile(request, pk):
 def subscriptions(request, pk):
     profile = CustomUser.objects.get(username=pk)
     current_user = request.user
-    print(current_user.followers.all())
-    print(current_user.followed_by.all())
     context = {'profile': profile, 'title': f'UGF | {current_user.username}'}
     return render(request, 'hadesapp/subscriptions.html', context)
 

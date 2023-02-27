@@ -9,6 +9,11 @@ def user_directory_path(instance, filename):
     return 'images/file_{0}/{1}'.format(slugify_instance_name(instance.game), filename)
 
 
+def profile_pic_directory_path(instance, filename):
+    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
+    return 'images/file_{0}/{1}'.format(instance.username, filename)
+
+
 # Create your models here.
 class CustomUser(AbstractUser):
     date_of_birth = models.DateField(null=True, blank=True)
@@ -24,9 +29,10 @@ class CustomUser(AbstractUser):
     ]
     gender = models.CharField(max_length=25, choices=GENDER_CHOICES, default=not_selected)
     about_me = models.TextField(null=True)
+    profile_pic = models.ImageField(null=True, blank=True, upload_to=profile_pic_directory_path,
+                                    default='/images/defaults/profile_pic/default_logo.png')
     followers = models.ManyToManyField("self", related_name='followed_by', symmetrical=False,
                                        blank=True)
-
 
     def __str__(self):
         return self.username

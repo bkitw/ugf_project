@@ -45,8 +45,6 @@ class CreateCustomUserForm(UserCreationForm):
     class Meta:
         model = CustomUser
         fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2',
-                  'email', 'date_of_birth', 'gender',
-                  'about_me'
                   ]
 
     username = forms.CharField(required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
@@ -63,15 +61,17 @@ class UpdateCustomUserForm(UserChangeForm):
     class Meta:
         model = CustomUser
         fields = ['username', 'first_name', 'last_name', 'email', 'date_of_birth', 'gender',
-                  'about_me', 'followers']
+                  'about_me', 'followers', 'profile_pic']
 
     username = forms.CharField(required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
     email = forms.EmailField(required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
     first_name = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
     last_name = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
     date_of_birth = forms.DateField(required=False, widget=forms.DateInput(attrs={'type': 'date'}))
-    about_me = forms.CharField(widget=forms.Textarea(attrs={"rows": "5", 'class': 'form-control'}))
+    about_me = forms.CharField(required=False, widget=forms.Textarea(attrs={"rows": "5", 'class': 'form-control'}))
     followers = forms.ModelMultipleChoiceField(required=False, queryset=CustomUser.objects.all(),)
+    profile_pic = forms.ImageField(required=False)
+
 
     def __init__(self, *args, **kwargs):
         super(UpdateCustomUserForm, self).__init__(*args, **kwargs)
@@ -85,3 +85,12 @@ class UpdateCustomUserForm(UserChangeForm):
             return instance.email
         else:
             return self.cleaned_data['email']
+
+    def clean_profile_image(self):
+        image = self.cleaned_data.get('profile_pic', False)
+        if image:
+            if image.size > 5 * 1024 * 1024:
+                raise ValidationError("Image file too large ( > 5mb )")
+            return image
+        else:
+            raise ValidationError("Couldn't read uploaded image")

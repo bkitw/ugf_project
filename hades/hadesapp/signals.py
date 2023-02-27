@@ -1,5 +1,5 @@
 from django.db.models.signals import post_save
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group
 from .models import *
 
 
@@ -10,7 +10,7 @@ def new_user_profile(sender, instance, created, **kwargs):
         print('Profile created!', instance.username)
 
 
-post_save.connect(new_user_profile, sender=User)
+post_save.connect(new_user_profile, sender=CustomUser)
 
 
 def klass_pre_save(sender, instance, *args, **kwargs):
