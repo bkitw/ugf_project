@@ -11,7 +11,7 @@ def user_directory_path(instance, filename):
 
 # Create your models here.
 class CustomUser(AbstractUser):
-    date_of_birth = models.DateField(null=True, default='Not set')
+    date_of_birth = models.DateField(null=True, blank=True)
     male = 'Male'
     female = 'Female'
     other = 'Other'
@@ -24,6 +24,9 @@ class CustomUser(AbstractUser):
     ]
     gender = models.CharField(max_length=25, choices=GENDER_CHOICES, default=not_selected)
     about_me = models.TextField(null=True)
+    followers = models.ManyToManyField("self", related_name='followed_by', symmetrical=False,
+                                       blank=True)
+
 
     def __str__(self):
         return self.username

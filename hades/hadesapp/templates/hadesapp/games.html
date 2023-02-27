@@ -16,8 +16,10 @@
                         <th scope="col">#</th>
                         <th scope="col">Game</th>
                         <th scope="col">Release date</th>
+                        {%if request.user.is_staff%}
                         <th scope="col">Update</th>
                         <th scope="col">Delete</th>
+                        {%endif%}
                     </tr>
                     </thead>
                     <tbody>
@@ -26,36 +28,25 @@
                         <th scope="row">{{game.id}}</th>
                         <td><a href="{%url 'game_page' game.slug%}">{{game}}</a></td>
                         <td>{{game.date_of_release}}</td>
+                        {%if request.user.is_staff%}
                         <td><a href="{%url 'update_game' game.slug %}">update</a></td>
                         <td><a href="{%url 'delete_game' game.slug %}">delete</a></td>
+                        {%endif%}
                     </tr>
                     {%endfor%}
                     </tbody>
                 </table>
             </div>
-
+            {%if request.user.is_staff%}
             <div class="col">
                 <form method="post" action="" enctype="multipart/form-data">
                     {%csrf_token%}
                     {{game_form.as_p}}
                     {{attachment_form.as_p}}
-<!--                    <ul class="list-group">-->
-<!--                        <li class="list-group-item">{{game_form.name.label}} : {{game_form.name}}</li>-->
-<!--                        <li class="list-group-item">{{game_form.slug.label}} : {{game_form.slug}}</li>-->
-<!--                        <li class="list-group-item">{{game_form.date_of_release.label}} : {{game_form.date_of_release}}</li>-->
-<!--                        <li class="list-group-item">{{game_form.description.label}} : {{game_form.description}}</li>-->
-<!--                        <li class="list-group-item">{{game_form.developer.label}} : {{game_form.developer}}</li>-->
-<!--                        <li class="list-group-item">{{game_form.genres.label}} : {{game_form.genres}}</li>-->
-<!--                    </ul>-->
-<!--                    <br>-->
-<!--                    <h3>Add an image to the game:</h3>-->
-<!--                    <ul class="list-group">-->
-<!--                        <li class="list-group-item">{{attachment_form.game_image}}</li>-->
-<!--                    </ul>-->
                     <input type="submit" name="Submit">
                 </form>
             </div>
-
+            {%endif%}
         </div>
     </div>
 </div>
