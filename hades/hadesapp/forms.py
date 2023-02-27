@@ -1,6 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django import forms
-from django.forms import ModelForm
+from django.forms import ModelForm, ModelMultipleChoiceField
 from django.contrib.auth.models import User
 from .models import *
 from django.core.exceptions import ValidationError
@@ -63,14 +63,15 @@ class UpdateCustomUserForm(UserChangeForm):
     class Meta:
         model = CustomUser
         fields = ['username', 'first_name', 'last_name', 'email', 'date_of_birth', 'gender',
-                  'about_me']
+                  'about_me', 'followers']
 
     username = forms.CharField(required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
     email = forms.EmailField(required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
     first_name = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
     last_name = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
     date_of_birth = forms.DateField(required=False, widget=forms.DateInput(attrs={'type': 'date'}))
-    about_me = forms.CharField(widget=forms.Textarea(attrs={"rows":"5", 'class': 'form-control'}))
+    about_me = forms.CharField(widget=forms.Textarea(attrs={"rows": "5", 'class': 'form-control'}))
+    followers = forms.ModelMultipleChoiceField(required=False, queryset=CustomUser.objects.all(),)
 
     def __init__(self, *args, **kwargs):
         super(UpdateCustomUserForm, self).__init__(*args, **kwargs)

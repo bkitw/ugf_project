@@ -192,7 +192,7 @@ def genres(request):
         if form.is_valid():
             form.save()
             return redirect('genres')
-    context = {'title': 'UGF | Genres', 'form': form, 'genres': genres,}
+    context = {'title': 'UGF | Genres', 'form': form, 'genres': genres, }
     return render(request, 'hadesapp/genres.html', context)
 
 
@@ -238,25 +238,27 @@ def game_page(request, slug):
 
 @allowed_users(allowed_roles=['admins', 'custom_users', 'newbies'])
 def user_profile(request, pk):
-    user = CustomUser.objects.get(username=pk)
+    profile = CustomUser.objects.get(username=pk)
     main_user = True
-    if user.username != request.user.username:
+    if profile.username != request.user.username:
         main_user = False
-    date_of_registration = user.date_joined.date()
+    date_of_registration = profile.date_joined.date()
     today = date.today()
     days_on_site = today - date_of_registration
+    print(request.user.followers.all())
     context = {
-        'title': f'UGF | {user.username}',
-        'username': user.username, 'first_name': user.first_name,
-        'last_name': user.last_name, 'email': user.email,
-        'date_of_birth': user.date_of_birth, 'about_me': user.about_me,
-        'gender': user.gender, 'date_of_registration': date_of_registration,
+        'title': f'UGF | {profile.username}',
+        'username': profile.username, 'first_name': profile.first_name,
+        'last_name': profile.last_name, 'email': profile.email,
+        'date_of_birth': profile.date_of_birth, 'about_me': profile.about_me,
+        'gender': profile.gender, 'date_of_registration': date_of_registration,
         'today': today, 'days_on_site': days_on_site.days,
-        'main_user': main_user,
+        'main_user': main_user, 'profile': profile
     }
     return render(request, 'hadesapp/user_profile.html', context)
 
 
+@allowed_users(allowed_roles=['admins', 'custom_users', 'newbies'])
 def update_user_profile(request, pk):
     user = CustomUser.objects.get(username=pk)
     form = UpdateCustomUserForm(instance=user)
@@ -268,5 +270,33 @@ def update_user_profile(request, pk):
         if form.is_valid():
             form.save()
             return redirect('user_profile', form.cleaned_data.get('username'))
-    context = {'form': form, 'days_on_site': days_on_site.days, 'title': f'UGF | {user.username}',}
+    context = {'form': form, 'days_on_site': days_on_site.days, 'title': f'UGF | {user.username}', }
     return render(request, 'hadesapp/update_user_profile.html', context)
+
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admins', 'custom_users', 'newbies'])
+def subscriptions(request, pk):
+    profile = CustomUser.objects.get(username=pk)
+    current_user = request.user
+    print(current_user.followers.all())
+    print(current_user.followed_by.all())
+    context = {'profile': profile, 'title': f'UGF | {current_user.username}'}
+    return render(request, 'hadesapp/subscriptions.html', context)
+
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admins', 'custom_users', 'newbies'])
+def following(request, pk):
+    profile = CustomUser.objects.get(username=pk)
+    current_user = request.user
+    if request.method == "POST":
+        action = request.POST['following']
+        if action == 'follow':
+            current_user.followers.add(profile)
+            return redirect('user_profile', profile.username)
+        elif action == 'unfollow':
+            current_user.followers.remove(profile)
+            return redirect('user_profile', profile.username)
+    context = {}
+    return redirect('user_profile', request.user.username)

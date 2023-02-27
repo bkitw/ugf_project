@@ -24,7 +24,9 @@ class CustomUser(AbstractUser):
     ]
     gender = models.CharField(max_length=25, choices=GENDER_CHOICES, default=not_selected)
     about_me = models.TextField(null=True)
-    subscribers = models.ManyToManyField("self")
+    followers = models.ManyToManyField("self", related_name='followed_by', symmetrical=False,
+                                       blank=True)
+
 
     def __str__(self):
         return self.username
