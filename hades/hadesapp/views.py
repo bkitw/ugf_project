@@ -13,10 +13,9 @@ from .models import Developer, Genre, Game
 from django.conf import settings
 from pathlib import Path
 from .decorators import allowed_users, admin_only, authenticated_user
-from datetime import datetime
-from datetime import date
-
-
+from datetime import datetime, date
+from .filters import UserFilter
+from django.core.paginator import Paginator
 # Create your views here.
 
 @login_required(login_url='login')
@@ -310,3 +309,16 @@ def following(request, pk):
             return redirect('user_profile', profile.username)
     context = {}
     return redirect('user_profile', request.user.username)
+
+
+def user_search(request):
+    submitted = 'submitted' in request.GET
+    data = request.GET if submitted else None
+    users = CustomUser.objects.all()
+    myFilter = UserFilter(data, queryset=users)
+    users = myFilter.qs
+    # p = Paginator(users, 1)
+    # page = request.GET.get('page')
+    # users_pages = p.get_page(page)
+    context = {'myFilter': myFilter, 'users':users, 'title': 'UGF | Search',}
+    return render(request, 'hadesapp/user_search.html', context)

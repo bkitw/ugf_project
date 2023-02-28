@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'hadesapp.apps.HadesappConfig',
+    'django_filters',
 ]
 AUTH_USER_MODEL = "hadesapp.CustomUser"
 
@@ -75,9 +76,16 @@ WSGI_APPLICATION = 'hades.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {'ENGINE': 'django.db.backends.postgresql_psycopg2', 'NAME': 'hades_postgres', 'USER': 'bkitw',
+#                 'PASSWORD': '22038', 'HOST': 'localhost', 'PORT': '5432', }}
+
 DATABASES = {
-    'default': {'ENGINE': 'django.db.backends.postgresql_psycopg2', 'NAME': 'hades_postgres', 'USER': 'bkitw',
-                'PASSWORD': '22038', 'HOST': 'localhost', 'PORT': '5432', }}
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'hades_db.sqlite',
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
