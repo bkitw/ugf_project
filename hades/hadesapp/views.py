@@ -16,6 +16,8 @@ from .decorators import allowed_users, admin_only, authenticated_user
 from datetime import datetime, date
 from .filters import UserFilter
 from django.core.paginator import Paginator
+
+
 # Create your views here.
 
 @login_required(login_url='login')
@@ -312,13 +314,14 @@ def following(request, pk):
 
 
 def user_search(request):
-    submitted = 'submitted' in request.GET
-    data = request.GET if submitted else None
     users = CustomUser.objects.all()
-    myFilter = UserFilter(data, queryset=users)
-    users = myFilter.qs
-    # p = Paginator(users, 1)
-    # page = request.GET.get('page')
-    # users_pages = p.get_page(page)
-    context = {'myFilter': myFilter, 'users':users, 'title': 'UGF | Search',}
+    my_filter = UserFilter(request.GET, queryset=users)
+    users = my_filter.qs
+    p = Paginator(users, 1)
+    page = request.GET.get('page')
+    users_pages = p.get_page(page)
+    context = {
+        'my_filter': my_filter, 'users': users, 'title': 'UGF | Search',
+        'users_pages': users_pages,
+               }
     return render(request, 'hadesapp/user_search.html', context)
