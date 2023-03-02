@@ -5,6 +5,7 @@ from .models import *
 
 def new_user_profile(sender, instance, created, **kwargs):
     if created:
+        group = Group.objects.get_or_create(name='newbies')
         group = Group.objects.get(name='newbies')
         instance.groups.add(group)
         print('Profile created!', instance.username)
