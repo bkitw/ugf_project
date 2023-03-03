@@ -26,9 +26,15 @@ class GenreForm(ModelForm):
         fields = '__all__'
 
 
+class YoutubeVideoform(ModelForm):
+    class Meta:
+        model = GameTrailer
+        fields = ['youtube_id']
+
+
 class AttachmentForm(ModelForm):
     class Meta:
-        model = GameAttachments
+        model = GameAttachment
         fields = ['game_image', ]
 
     def clean_game_image(self):
@@ -69,9 +75,8 @@ class UpdateCustomUserForm(UserChangeForm):
     last_name = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
     date_of_birth = forms.DateField(required=False, widget=forms.DateInput(attrs={'type': 'date'}))
     about_me = forms.CharField(required=False, widget=forms.Textarea(attrs={"rows": "5", 'class': 'form-control'}))
-    followers = forms.ModelMultipleChoiceField(required=False, queryset=CustomUser.objects.all(),)
+    followers = forms.ModelMultipleChoiceField(required=False, queryset=CustomUser.objects.all(), )
     profile_pic = forms.ImageField(required=False)
-
 
     def __init__(self, *args, **kwargs):
         super(UpdateCustomUserForm, self).__init__(*args, **kwargs)

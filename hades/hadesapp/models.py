@@ -11,7 +11,7 @@ def user_directory_path(instance, filename):
 
 def profile_pic_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
-    return 'images/file_{0}/{1}'.format(instance.username, filename)
+    return 'images/user_pic_{0}/{1}'.format(instance.username, filename)
 
 
 # Create your models here.
@@ -73,8 +73,27 @@ class Game(models.Model):
         return f'{self.name} ({self.slug})'
 
 
-class GameAttachments(models.Model):
+class GameAttachment(models.Model):
     game = models.ForeignKey(Game, null=True, on_delete=models.CASCADE)
     game_image = models.ImageField(blank=True, null=True, upload_to=user_directory_path)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+class GameTrailer(models.Model):
+    game = models.ForeignKey(Game, null=True, on_delete=models.CASCADE)
+    youtube_id = models.CharField(max_length=50, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        if self.youtube_id.startswith('https://youtu.be/'):
+            self.youtube_id = self.youtube_id.replace('https://youtu.be/', '')
+            print(self.youtube_id, 'changed')
+        elif self.youtube_id.startswith('https://www.youtube.com/watch?v='):
+            self.youtube_id = self.youtube_id.replace('https://www.youtube.com/watch?v=', '')
+            print(self.youtube_id, 'changed')
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.game} -- {self.id}'

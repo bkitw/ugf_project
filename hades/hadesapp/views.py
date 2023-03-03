@@ -140,7 +140,7 @@ def games(request):
 @allowed_users(allowed_roles=['admins', 'custom_users'])
 def update_game(request, slug):
     game = Game.objects.get(slug=slug)
-    attachment = GameAttachments.objects.get(game=game)
+    attachment = GameAttachment.objects.get(game=game)
     picture_for_delete = attachment.game_image
     game_form = GameForm(instance=game)
     attachment_form = AttachmentForm(instance=attachment)
@@ -232,8 +232,13 @@ Genres CRUD finished.
 @allowed_users(allowed_roles=['admins', 'custom_users', 'newbies'])
 def game_page(request, slug):
     game = Game.objects.get(slug=slug)
-    image = GameAttachments.objects.get(game=game)
-    context = {'title': f'UGF | {game.name}', 'game': game, 'img_path': image.game_image, }
+    image = GameAttachment.objects.get(game=game)
+    trailers = GameTrailer.objects.all().filter(game=game)
+    context = {
+        'title': f'UGF | {game.name}', 'game': game, 'img_path': image.game_image,
+        'trailers': trailers
+
+    }
     return render(request, 'hadesapp/game_page.html', context)
 
 
@@ -274,7 +279,8 @@ def update_user_profile(request, pk):
             picture_for_delete = profile_pic
             filename = Path(f'{settings.MEDIA_ROOT}\\{picture_for_delete}'.replace('/', '\\'))
             try:
-                if str(filename).endswith('\\images\\defaults\\profile_pic\\default_logo.png'):
+                if str(filename).endswith(
+                        '\\images\\defaults\\profile_pic\\default_logo.png') or picture_for_delete == user.profile_pic:
                     pass
                 else:
                     filename.unlink()
@@ -317,11 +323,11 @@ def user_search(request):
     users = CustomUser.objects.all()
     my_filter = UserFilter(request.GET, queryset=users)
     users = my_filter.qs
-    p = Paginator(users, 1)
+    p = Paginator(users, 2)
     page = request.GET.get('page')
     users_pages = p.get_page(page)
     context = {
         'my_filter': my_filter, 'users': users, 'title': 'UGF | Search',
         'users_pages': users_pages,
-               }
+    }
     return render(request, 'hadesapp/user_search.html', context)

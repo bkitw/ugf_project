@@ -1,15 +1,27 @@
 {%extends 'hadesapp/base.html'%}
 {%load static%}
 {%block content%}
-<div class="container">
-    <div class="card" style="width: 18rem;">
-        <img src="{%static 'media'%}/{{img_path}}" class="card-img-top" alt="alt_game_image.jpeg">
-        <div class="card-body">
-            <h5 class="card-title">{{game.name}} ({{game.date_of_release}})</h5>
-            <p class="card-text">{{game.description}}</p>
-            <a href="{%url 'games'%}" class="btn btn-primary">Go Back</a>
+<section>
+<div class="container" style="margin: 2%">
+    <div class="row">
+        <div class="col-4">
+        </div>
+        <div class="col-6">
+            <div class="card" style="width: 100%">
+                <img src="{%static 'media'%}/{{img_path}}" class="card-img-top" alt="alt_game_image.jpeg">
+                <div class="card-body">
+                    <h5 class="card-title">{{game.name}} ({{game.date_of_release}})</h5>
+                    <p class="card-text">{{game.description}}</p>
+                    {%for trailer in trailers%}
+                    <div><iframe width="510" height="315" allowfullscreen
+                                 src="https://www.youtube.com/embed/{{trailer.youtube_id}}"></iframe></div>
+                    {%endfor%}
+                    <a href="{%url 'games'%}" class="btn btn-primary">Go Back</a>
+                </div>
+            </div>
         </div>
     </div>
-</div>
 
+</div>
+</section>
 {%endblock%}
