@@ -26,7 +26,7 @@ class GenreForm(ModelForm):
         fields = '__all__'
 
 
-class YoutubeVideoform(ModelForm):
+class YoutubeVideoForm(ModelForm):
     class Meta:
         model = GameTrailer
         fields = ['youtube_id']
