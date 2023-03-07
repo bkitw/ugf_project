@@ -16,6 +16,9 @@ from .decorators import allowed_users, admin_only, authenticated_user
 from datetime import datetime, date
 from .filters import UserFilter
 from django.core.paginator import Paginator
+from django.http import JsonResponse
+from .utils import profile_pic as avatar
+from django.db.models import Sum
 
 
 # Create your views here.
@@ -70,13 +73,16 @@ Developers CRUD started.
 @login_required(login_url='login')
 def developers(request):
     devs = Developer.objects.all()
+    p = Paginator(devs, 5)
+    page = request.GET.get('page')
+    devs_pages = p.get_page(page)
     form = DeveloperForm()
     if request.method == 'POST':
         form = DeveloperForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('main')
-    context = {'title': 'UGF | Devs', 'form': form, 'devs': devs}
+            return redirect('developers')
+    context = {'devs_pages': devs_pages, 'title': 'UGF | Devs', 'form': form, 'devs': devs}
     return render(request, 'hadesapp/developers.html', context)
 
 
@@ -186,6 +192,9 @@ Genres CRUD started.
 @login_required(login_url='login')
 def genres(request):
     genres = Genre.objects.all()
+    p = Paginator(genres, 5)
+    page = request.GET.get('page')
+    genres_pages = p.get_page(page)
     form = GenreForm()
     if request.method == 'POST':
         form = GenreForm(request.POST)
@@ -193,7 +202,7 @@ def genres(request):
         if form.is_valid():
             form.save()
             return redirect('genres')
-    context = {'title': 'UGF | Genres', 'form': form, 'genres': genres, }
+    context = {'title': 'UGF | Genres', 'form': form, 'genres': genres, 'genres_pages': genres_pages}
     return render(request, 'hadesapp/genres.html', context)
 
 
@@ -233,13 +242,43 @@ Genres CRUD finished.
 def game_page(request, slug):
     game = Game.objects.get(slug=slug)
     image = GameAttachment.objects.get(game=game)
-    trailers = GameTrailer.objects.all().filter(game=game)
+    trailers = GameTrailer.objects.filter(game=game).all()
+    voters = GameRate.objects.filter(game=game).count()
+    sum_of_scores = GameRate.objects.filter(game=game).aggregate(all_scores=Sum('score'))
+    average_score = round(sum_of_scores['all_scores'] / voters, 2)
+    already_voted = GameRate.objects.filter(user_id=request.user.id).exists()
+    score = GameRate.objects.filter(user_id=request.user.id)
+    time = datetime.now().timestamp()
+    scores_by = {}
+    for score in range(1, 11):
+        scores_by.update({score: GameRate.objects.filter(game=game, score=score).count()})
+    print(scores_by)
     context = {
         'title': f'UGF | {game.name}', 'game': game, 'img_path': image.game_image,
-        'trailers': trailers
+        'trailers': trailers, 'scores_by': scores_by, 'already_voted': already_voted,
+        'user_score': score, 'average_score': average_score, 'time':time
 
     }
     return render(request, 'hadesapp/game_page.html', context)
+
+
+def rate(request):
+    if request.method == 'POST':
+        val = request.POST.get('val')
+        game_slug = request.POST.get('game_slug')
+        game = Game.objects.get(slug=game_slug)
+        obj = GameRate(user_id=request.user.id, game_id=game.id, score=val)
+        obj.save()
+        return JsonResponse({'success': 'true', 'score': val, 'redirect': game_slug}, safe=False)
+    return JsonResponse({'success': 'false'})
+
+
+def delete_rate(request):
+    if request.method == 'POST':
+        obj = GameRate.objects.get(user_id=request.user.id)
+        game = Game.objects.get(id=obj.game_id)
+        obj.delete()
+        return redirect('game_page', game.slug)
 
 
 @allowed_users(allowed_roles=['admins', 'custom_users', 'newbies'])
@@ -251,7 +290,7 @@ def user_profile(request, pk):
     date_of_registration = profile.date_joined.date()
     today = date.today()
     days_on_site = today - date_of_registration
-    profile_pic = profile.profile_pic
+    profile_pic = avatar(profile)
     context = {
         'title': f'UGF | {profile.username}',
         'username': profile.username, 'first_name': profile.first_name,
@@ -271,7 +310,7 @@ def update_user_profile(request, pk):
     date_of_registration = user.date_joined.date()
     today = date.today()
     days_on_site = today - date_of_registration
-    profile_pic = user.profile_pic
+    profile_pic = avatar(user)
     if request.method == 'POST':
         form = UpdateCustomUserForm(request.POST, request.FILES, instance=user)
         if form.is_valid():
@@ -323,7 +362,7 @@ def user_search(request):
     users = CustomUser.objects.all()
     my_filter = UserFilter(request.GET, queryset=users)
     users = my_filter.qs
-    p = Paginator(users, 2)
+    p = Paginator(users, 5)
     page = request.GET.get('page')
     users_pages = p.get_page(page)
     context = {

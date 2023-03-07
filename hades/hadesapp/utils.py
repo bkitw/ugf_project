@@ -47,4 +47,9 @@ def slugify_instance_name(instance, save=False, new_slug=None):
     return instance
 
 
-
+def profile_pic(user):
+    if user.profile_pic:
+        filepath = user.profile_pic
+    else:
+        filepath = '/images/defaults/profile_pic/default_logo.png'
+    return filepath

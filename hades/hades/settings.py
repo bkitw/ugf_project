@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'hadesapp.apps.HadesappConfig',
     'django_filters',
+
 ]
 AUTH_USER_MODEL = "hadesapp.CustomUser"
 

@@ -1,27 +1,117 @@
 {%extends 'hadesapp/base.html'%}
 {%load static%}
 {%block content%}
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+    .checked {
+    color:yellow;
+    }
+    .star-button{
+    background-color: inherit !important;
+    border: 0 !important;
+    }
+</style>
 <section>
-<div class="container" style="margin: 2%">
-    <div class="row">
-        <div class="col-4">
-        </div>
-        <div class="col-6">
-            <div class="card" style="width: 100%">
-                <img src="{%static 'media'%}/{{img_path}}" class="card-img-top" alt="alt_game_image.jpeg">
-                <div class="card-body">
-                    <h5 class="card-title">{{game.name}} ({{game.date_of_release}})</h5>
-                    <p class="card-text">{{game.description}}</p>
-                    {%for trailer in trailers%}
-                    <div><iframe width="510" height="315" allowfullscreen
-                                 src="https://www.youtube.com/embed/{{trailer.youtube_id}}"></iframe></div>
-                    {%endfor%}
-                    <a href="{%url 'games'%}" class="btn btn-primary">Go Back</a>
+    <div class="container" style="margin: 2%">
+        <div class="row">
+            <div class="col-4">
+                <div class="accordion accordion-flush" id="game_page_accordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-headingOne" data-bs-toggle="tooltip" data-bs-title="Default tooltip">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#flush-collapseOne" aria-expanded="false"
+                                    aria-controls="flush-collapseOne">
+                                Users rate:
+                            </button>
+                        </h2>
+                        <div id="flush-collapseOne" class="accordion-collapse collapse"
+                             aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">
+                                {{game.name}} - ✪ {{average_score}}
+                                <br>
+                                ★ - {{scores_by.1}}
+                                <br>
+                                ★★ - {{scores_by.2}}
+                                <br>
+                                ★★★ - {{scores_by.3}}
+                                <br>
+                                ★★★★ - {{scores_by.4}}
+                                <br>
+                                ★★★★★ - {{scores_by.5}}
+                                <br>
+                                ★★★★★★ - {{scores_by.6}}
+                                <br>
+                                ★★★★★★★ - {{scores_by.7}}
+                                <br>
+                                ★★★★★★★★ - {{scores_by.8}}
+                                <br>
+                                ★★★★★★★★★ - {{scores_by.9}}
+                                <br>
+                                ★★★★★★★★★★ - {{scores_by.10}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-headingTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#flush-collapseTwo" aria-expanded="false"
+                                    aria-controls="flush-collapseTwo">
+                                Your rate:
+                            </button>
+                        </h2>
+                        <div id="flush-collapseTwo" class="accordion-collapse collapse"
+                             aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">
+                                {%if already_voted%}
+                                <p>You rated this at {{user_score.score}} points!</p>
+                                <form action="{%url 'delete_rate'%}" method="POST">
+                                    {%csrf_token%}
+                                <button type="submit" class="btn btn-warning">Changed your mind?</button>
+                                    </form>
+                                {%else%}
+                                 <form class="rate-form" action="" method="POST">
+                                    {%csrf_token%}
+                                <button type="submit" class="fa fa-star star-button " id="first"></button>
+                                <button type="submit" class="fa fa-star star-button" id="second"></button>
+                                <button type="submit" class="fa fa-star star-button" id="third"></button>
+                                <button type="submit" class="fa fa-star star-button" id="fourth"></button>
+                                <button type="submit" class="fa fa-star star-button" id="fifth"></button>
+                                <button type="submit" class="fa fa-star star-button" id="sixth"></button>
+                                <button type="submit" class="fa fa-star star-button" id="seventh"></button>
+                                <button type="submit" class="fa fa-star star-button" id="eighth"></button>
+                                <button type="submit" class="fa fa-star star-button" id="ninth"></button>
+                                <button type="submit" class="fa fa-star star-button" id="tenth"></button>
+                                    </form>
+                                {%endif%}
+                            </div>
+                            <br>
+                            <div id="confirm-box"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-8">
+                <div class="card" style="width: 100%">
+                    <img height="auto" src="{%static 'media'%}/{{img_path}}" class="card-img-top"
+                         alt="alt_game_image.jpeg">
+                    <div class="card-body">
+                        <h5 class="card-title"><span  id="game_slug" data-slug="{{game.slug}}">{{game.name}}</span> ({{game.date_of_release}})</h5>
+                        <p class="card-text">{{game.description}}</p>
+                        {%for trailer in trailers%}
+                        <div>
+                            <iframe width="auto" height="315" allowfullscreen style="width:100%"
+                                    src="https://www.youtube.com/embed/{{trailer.youtube_id}}"></iframe>
+                        </div>
+                        {%endfor%}
+                        <a href="{%url 'games'%}" class="btn btn-primary">Go Back</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-</div>
 </section>
+{%endblock%}
+{%block add_js%}
+<script src="../../static/js/stars.js?var={{time}}"></script>
 {%endblock%}

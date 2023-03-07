@@ -2,6 +2,7 @@ from django.db import models
 from .utils import slugify_instance_name
 from django.db.models.signals import pre_save, post_save
 from django.contrib.auth.models import User, AbstractUser
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 def user_directory_path(instance, filename):
@@ -97,3 +98,16 @@ class GameTrailer(models.Model):
 
     def __str__(self):
         return f'{self.game} -- {self.id}'
+
+
+class GameRate(models.Model):
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    score = models.IntegerField(default=0, validators=[
+        MaxValueValidator(10),
+        MinValueValidator(0)
+    ])
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+
+    def __str__(self):
+        return f'{self.game}, {self.user}, {self.score}'

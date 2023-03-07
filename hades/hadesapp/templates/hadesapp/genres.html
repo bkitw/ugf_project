@@ -1,5 +1,6 @@
 {%extends 'hadesapp/base.html'%}
 {%load static%}
+{% load pagination_tags %}
 {%block content%}
 <h1>Genres_page</h1>
 
@@ -13,7 +14,6 @@
                 <table class="table">
                     <thead>
                     <tr>
-                        <th scope="col">#</th>
                         <th scope="col">Genre</th>
                         {% if request.user.is_staff %}
                         <th scope="col">Update</th>
@@ -22,9 +22,8 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {%for genre in genres%}
+                    {%for genre in genres_pages%}
                     <tr>
-                        <th scope="row">{{genre.id}}</th>
                         <td>{{genre}}</td>
                         {% if request.user.is_staff %}
                         <td><a href="{%url 'update_genre' genre.slug %}">update</a></td>
@@ -34,14 +33,61 @@
                     {%endfor%}
                     </tbody>
                 </table>
+
+                <!--pagination-->
+
+                <br/>
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center nav nav-pills">
+                        {% if genres_pages.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?{% url_replace request 'page' 1%}">
+                                <strong><<</strong>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="?{% url_replace request 'page' genres_pages.previous_page_number%}">
+                                <strong><</strong>
+                            </a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled" hidden>
+                            <a class="page-link">Previous</a>
+                        </li>
+                        {% endif %}
+
+                        {% for number in genres_pages.paginator.page_range %}
+                        <li class="page-item {%if genres_pages.number == number %} active {%endif%}">
+                            <a class="page-link" href="?{% url_replace request 'page' number%}">
+                            {{number}}
+                        </a>
+                        </li>
+                        {% endfor %}
+                        {% if genres_pages.has_next %}
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="?{% url_replace request 'page' genres_pages.next_page_number%}"><strong>></strong> </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="?{% url_replace request 'page' genres_pages.paginator.num_pages%}"><strong>>></strong></a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled" hidden>
+                            <a class="page-link" href="#"><strong>></strong></a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
             </div>
-{% if request.user.is_staff %}
+            {% if request.user.is_staff %}
             <div class="col">
                 <form method="post" action="">
                     {%csrf_token%}
                     {% for form in form%}
                     <ul class="list-group">
-                        <li class="list-group-item" >{{form.label}}: {{form}}</li>
+                        <li class="list-group-item">{{form.label}}: {{form}}</li>
                     </ul>
                     {%endfor%}
                     <input type="submit" name="Submit">
