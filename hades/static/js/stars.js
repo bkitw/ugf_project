@@ -2,6 +2,7 @@ console.log('Hello world!')
 
 //get all of the rate stars
 
+
 const one = document.getElementById('first')
 const two = document.getElementById('second')
 const three = document.getElementById('third')
