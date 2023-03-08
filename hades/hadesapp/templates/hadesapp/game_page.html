@@ -12,72 +12,16 @@
     }
 
 
+
+
+
 </style>
 <section>
     <div class="container" style="margin: 2%">
         <div class="row">
-            <div class="col-4">
-                <div class="accordion accordion-flush" id="game_page_accordion">
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="flush-headingOne">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#flush-collapseOne" aria-expanded="false"
-                                    aria-controls="flush-collapseOne">
-                                Users rate:
-                            </button>
-                        </h2>
-                        <div id="flush-collapseOne" class="accordion-collapse collapse"
-                             aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-                            <div class="accordion-body">
-                                {{game.name}} - ✪ {{average_score}}
-                                <div>
-                                    <canvas id="myChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="flush-headingTwo">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#flush-collapseTwo" aria-expanded="false"
-                                    aria-controls="flush-collapseTwo">
-                                Your rate:
-                            </button>
-                        </h2>
-                        <div id="flush-collapseTwo" class="accordion-collapse collapse"
-                             aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
-                            <div class="accordion-body">
-                                {%if already_voted%}
-                                <p>You rated this at {{user_score.score}} points!</p>
-                                <form action="{%url 'delete_rate'%}" method="POST">
-                                    {%csrf_token%}
-                                    <button type="submit" class="btn btn-warning">Changed your mind?</button>
-                                </form>
-                                {%else%}
-                                <form class="rate-form" action="" method="POST">
-                                    {%csrf_token%}
-                                    <button type="submit" class="fa fa-star star-button " id="first"></button>
-                                    <button type="submit" class="fa fa-star star-button" id="second"></button>
-                                    <button type="submit" class="fa fa-star star-button" id="third"></button>
-                                    <button type="submit" class="fa fa-star star-button" id="fourth"></button>
-                                    <button type="submit" class="fa fa-star star-button" id="fifth"></button>
-                                    <button type="submit" class="fa fa-star star-button" id="sixth"></button>
-                                    <button type="submit" class="fa fa-star star-button" id="seventh"></button>
-                                    <button type="submit" class="fa fa-star star-button" id="eighth"></button>
-                                    <button type="submit" class="fa fa-star star-button" id="ninth"></button>
-                                    <button type="submit" class="fa fa-star star-button" id="tenth"></button>
-                                </form>
-                                {%endif%}
-                            </div>
-                            <br>
-                            <div id="confirm-box"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-8">
+            <div class="col-10">
                 <div class="card" style="width: 100%">
-                    <img height="auto" src="{%static 'media'%}/{{img_path}}" class="card-img-top"
+                    <img height="500px" src="{%static 'media'%}/{{img_path}}" class="card-img-top"
                          alt="alt_game_image.jpeg">
                     <div class="card-body">
                         <h5 class="card-title"><span id="game_slug" data-slug="{{game.slug}}">{{game.name}}</span>
@@ -90,6 +34,45 @@
                         </div>
                         {%endfor%}
                         <a href="{%url 'games'%}" class="btn btn-primary">Go Back</a>
+                        <div class="col-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    {{game.name}} - ✪ {{average_score}}
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">Users rate:</h5>
+                                    <div>
+                                        <canvas id="myChart"></canvas>
+                                    </div>
+                                    <div class="accordion-body">
+                                        {%if already_voted%}
+                                        <p>You rated this at {{user_score.score}} points!</p>
+                                        <form action="{%url 'delete_rate'%}" method="POST">
+                                            {%csrf_token%}
+                                            <button type="submit" class="btn btn-warning">Changed your mind?</button>
+                                        </form>
+                                        {%else%}
+                                        <form class="rate-form" action="" method="POST">
+                                            {%csrf_token%}
+                                            <button type="submit" class="fa fa-star star-button " id="first"></button>
+                                            <button type="submit" class="fa fa-star star-button" id="second"></button>
+                                            <button type="submit" class="fa fa-star star-button" id="third"></button>
+                                            <button type="submit" class="fa fa-star star-button" id="fourth"></button>
+                                            <button type="submit" class="fa fa-star star-button" id="fifth"></button>
+                                            <button type="submit" class="fa fa-star star-button" id="sixth"></button>
+                                            <button type="submit" class="fa fa-star star-button" id="seventh"></button>
+                                            <button type="submit" class="fa fa-star star-button" id="eighth"></button>
+                                            <button type="submit" class="fa fa-star star-button" id="ninth"></button>
+                                            <button type="submit" class="fa fa-star star-button" id="tenth"></button>
+                                        </form>
+                                        {%endif%}
+                                    </div>
+                                    <br>
+                                    <div id="confirm-box"></div>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
             </div>
@@ -141,6 +124,9 @@
   }
 
   });
+
+
+
 </script>
 <script src="../../static/js/stars.js?var={{time}}"></script>
 {%endblock%}
