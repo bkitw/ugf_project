@@ -1,6 +1,5 @@
 console.log('Hello world!')
-const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
 //get all of the rate stars
 
 const one = document.getElementById('first')
@@ -13,7 +12,7 @@ const seven = document.getElementById('seventh')
 const eight = document.getElementById('eighth')
 const nine = document.getElementById('ninth')
 const ten = document.getElementById('tenth')
-
+console.log(one)
 // get the form, confirm-box and csrf token
 const form = document.querySelector('.rate-form')
 const confirmBox = document.getElementById('confirm-box')
@@ -124,7 +123,8 @@ const getNumericValue = (stringValue) =>{
 }
 
 const arr = [one, two, three, four, five, six, seven, eight, nine, ten]
-if (typeof item !== 'undefined'){
+
+
 arr.forEach(item=> item.addEventListener('mouseover', (event)=>{
         handleSelect(event.target.id)
         }))
@@ -163,4 +163,3 @@ arr.forEach(item=> item.addEventListener('mouseover', (event)=>{
             })
         })
     }))
-}

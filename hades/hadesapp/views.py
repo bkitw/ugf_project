@@ -19,7 +19,7 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse
 from .utils import profile_pic as avatar
 from django.db.models import Sum
-
+from decimal import *
 
 # Create your views here.
 
@@ -247,16 +247,18 @@ def game_page(request, slug):
     sum_of_scores = GameRate.objects.filter(game=game).aggregate(all_scores=Sum('score'))
     average_score = round(sum_of_scores['all_scores'] / voters, 2)
     already_voted = GameRate.objects.filter(user_id=request.user.id).exists()
-    score = GameRate.objects.filter(user_id=request.user.id)
+    user_score = GameRate.objects.filter(user_id=request.user.id).first()
     time = datetime.now().timestamp()
+    percent_of = {}
     scores_by = {}
     for score in range(1, 11):
         scores_by.update({score: GameRate.objects.filter(game=game, score=score).count()})
-    print(scores_by)
+    for key, percent in scores_by.items():
+        percent_of.update({key: round(percent /(voters/100), 2)})
     context = {
         'title': f'UGF | {game.name}', 'game': game, 'img_path': image.game_image,
         'trailers': trailers, 'scores_by': scores_by, 'already_voted': already_voted,
-        'user_score': score, 'average_score': average_score, 'time':time
+        'user_score': user_score, 'average_score': average_score, 'time': time, 'percent_of':percent_of
 
     }
     return render(request, 'hadesapp/game_page.html', context)

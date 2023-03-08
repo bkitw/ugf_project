@@ -1,7 +1,7 @@
 {%extends 'hadesapp/base.html'%}
 {%load static%}
 {%block content%}
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
     .checked {
     color:yellow;
@@ -10,6 +10,7 @@
     background-color: inherit !important;
     border: 0 !important;
     }
+
 </style>
 <section>
     <div class="container" style="margin: 2%">
@@ -17,7 +18,7 @@
             <div class="col-4">
                 <div class="accordion accordion-flush" id="game_page_accordion">
                     <div class="accordion-item">
-                        <h2 class="accordion-header" id="flush-headingOne" data-bs-toggle="tooltip" data-bs-title="Default tooltip">
+                        <h2 class="accordion-header" id="flush-headingOne">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#flush-collapseOne" aria-expanded="false"
                                     aria-controls="flush-collapseOne">
@@ -66,22 +67,22 @@
                                 <p>You rated this at {{user_score.score}} points!</p>
                                 <form action="{%url 'delete_rate'%}" method="POST">
                                     {%csrf_token%}
-                                <button type="submit" class="btn btn-warning">Changed your mind?</button>
-                                    </form>
+                                    <button type="submit" class="btn btn-warning">Changed your mind?</button>
+                                </form>
                                 {%else%}
-                                 <form class="rate-form" action="" method="POST">
+                                <form class="rate-form" action="" method="POST">
                                     {%csrf_token%}
-                                <button type="submit" class="fa fa-star star-button " id="first"></button>
-                                <button type="submit" class="fa fa-star star-button" id="second"></button>
-                                <button type="submit" class="fa fa-star star-button" id="third"></button>
-                                <button type="submit" class="fa fa-star star-button" id="fourth"></button>
-                                <button type="submit" class="fa fa-star star-button" id="fifth"></button>
-                                <button type="submit" class="fa fa-star star-button" id="sixth"></button>
-                                <button type="submit" class="fa fa-star star-button" id="seventh"></button>
-                                <button type="submit" class="fa fa-star star-button" id="eighth"></button>
-                                <button type="submit" class="fa fa-star star-button" id="ninth"></button>
-                                <button type="submit" class="fa fa-star star-button" id="tenth"></button>
-                                    </form>
+                                    <button type="submit" class="fa fa-star star-button " id="first"></button>
+                                    <button type="submit" class="fa fa-star star-button" id="second"></button>
+                                    <button type="submit" class="fa fa-star star-button" id="third"></button>
+                                    <button type="submit" class="fa fa-star star-button" id="fourth"></button>
+                                    <button type="submit" class="fa fa-star star-button" id="fifth"></button>
+                                    <button type="submit" class="fa fa-star star-button" id="sixth"></button>
+                                    <button type="submit" class="fa fa-star star-button" id="seventh"></button>
+                                    <button type="submit" class="fa fa-star star-button" id="eighth"></button>
+                                    <button type="submit" class="fa fa-star star-button" id="ninth"></button>
+                                    <button type="submit" class="fa fa-star star-button" id="tenth"></button>
+                                </form>
                                 {%endif%}
                             </div>
                             <br>
@@ -90,13 +91,13 @@
                     </div>
                 </div>
             </div>
-
             <div class="col-8">
                 <div class="card" style="width: 100%">
                     <img height="auto" src="{%static 'media'%}/{{img_path}}" class="card-img-top"
                          alt="alt_game_image.jpeg">
                     <div class="card-body">
-                        <h5 class="card-title"><span  id="game_slug" data-slug="{{game.slug}}">{{game.name}}</span> ({{game.date_of_release}})</h5>
+                        <h5 class="card-title"><span id="game_slug" data-slug="{{game.slug}}">{{game.name}}</span>
+                            ({{game.date_of_release}})</h5>
                         <p class="card-text">{{game.description}}</p>
                         {%for trailer in trailers%}
                         <div>
@@ -115,3 +116,37 @@
 {%block add_js%}
 <script src="../../static/js/stars.js?var={{time}}"></script>
 {%endblock%}
+
+<!--                    <div>
+                        <canvas id="myChart"></canvas>
+                    </div>
+                    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+                    <script>
+  const ctx = document.getElementById('myChart');
+
+   new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Just leave me crying -- {{percent_of.1}}%',
+      'Horrible -- {{percent_of.2}}%',
+      'Terrible --  {{percent_of.3}}%',
+      'Why do I even played this? -- {{percent_of.4}}%',
+      'And I spend amount of hours... on this? -- {{percent_of.5}}%',
+      'Did it the spark of potential I see? -- {{percent_of.6}}%',
+      'Will do -- {{percent_of.7}}%', 'Good -- {{percent_of.8}}%',
+      'Very good! -- {{percent_of.9}}%', 'A-M-A-Z-I-N-G -- {{percent_of.10}}%'],
+      datasets: [{
+        label: 'Users rated',
+        data: [{{scores_by.1}}, {{scores_by.2}}, {{scores_by.3}}, {{scores_by.4}}, {{scores_by.5}}, {{scores_by.6}}, {{scores_by.7}}, {{scores_by.8}}, {{scores_by.9}}, {{scores_by.10}}],
+        borderWidth: 1,
+      }]
+    },
+    options: {
+         legend: {
+      display: false },}
+
+  });
+
+                    </script>
+-->
