@@ -59,7 +59,7 @@ class Migration(migrations.Migration):
             name='GameAttachment',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('game_image', models.ImageField(blank=True, null=True, upload_to=hadesapp.models.user_directory_path)),
+                ('game_image', models.ImageField(blank=True, null=True, upload_to=hadesapp.models.game_directory_path)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('game', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='hadesapp.game')),

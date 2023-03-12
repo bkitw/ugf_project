@@ -1,0 +1,201 @@
+{%extends 'hadesapp/base.html'%}
+{%load static%}
+{%block content%}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+    .checked {
+    color:yellow;
+    }
+    .star-button{
+    background-color: inherit !important;
+    border: 0 !important;
+    }
+
+
+
+
+</style>
+<!--Main game info section!-->
+<section id="main_game_info_section">
+    <div class="container">
+        <div class="row"  >
+            <div class="col "  >
+                <div class="row align-items-center">
+                    <div class="col-8 col-sm-9"  >
+                        <div class="row align-items-start">
+                            <div class="p-3 col-5"   id="game_pic">
+                                <div class="card" style="width: 18rem;" id="game_card">
+                                    <img src="{%static 'media'%}/{{img_path}}" class="card-img-top"
+                                         alt="alt_game_image.jpeg" width="240" height="360" style="border-radius:10px">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><span id="game_slug" data-slug="{{game.slug}}">{{game.name}}</span><br>
+                                            <!--                                            <span style="font-size:12px; color:grey">({{game.date_of_release}})</span>-->
+                                        </h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col"   id='game_info'>
+                                <div class="p-4 col">
+                                    <ul>
+                                        <li><h3>Developer: {{developer.name}}</h3></li>
+                                        <li><h3>Genres:</h3>
+                                        <ul>
+                                            {%for genre in genres%}
+                                            <li ><h4>{{genre.name}}</h4></li>
+                                            {%endfor%}
+                                        </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4 col-sm-3"   id="game_rate_block">
+                        <div class="col">
+                            {%if is_released%}
+                            <div class="p-2 col" id="game_rate_subblock">
+                                <b>{{game.name}} - ✪ {{average_score}}</b>
+                            </div>
+                            {%if average_score%}
+                            <div class="p-2 col" id="chart!">
+                                <h5 class="p-2 card-title">Users rate:</h5>
+
+                                <div>
+                                    <canvas class="p-2" id="myChart"></canvas>
+                                </div>
+                                {%else%}
+                                <div>
+                                    <h4>Nobody doesn't give any rate to this game. <br> Be the first one!</h4>
+                                </div>
+                                {%endif%}
+                                <div class="col stars">
+                                    {%if already_voted%}
+                                    <p>You rated this at {{user_score.score}} points!</p>
+                                    <form action="{%url 'delete_rate' game.slug%}" method="POST">
+                                        {%csrf_token%}
+                                        <button type="submit" class="btn btn-warning">Changed your mind?</button>
+                                    </form>
+                                    {%else%}
+                                    <form class="rate-form" action="" method="POST">
+                                        {%csrf_token%}
+                                        <button type="submit" class="fa fa-star star-button"
+                                                title="Just leave me crying" id="first"></button>
+                                        <button type="submit" class="fa fa-star star-button"
+                                                title="Horrible" id="second"></button>
+                                        <button type="submit" class="fa fa-star star-button"
+                                                title="Terrible" id="third"></button>
+                                        <button type="submit" class="fa fa-star star-button"
+                                                title="Why do I even played this?" id="fourth"></button>
+                                        <button type="submit" class="fa fa-star star-button"
+                                                title="And I spend amount of hours... on this?" id="fifth"></button>
+                                        <button type="submit" class="fa fa-star star-button"
+                                                title="Did it the spark of potential I see?" id="sixth"></button>
+                                        <button type="submit" class="fa fa-star star-button"
+                                                title="Will do" id="seventh"></button>
+                                        <button type="submit" class="fa fa-star star-button"
+                                                title="Good!" id="eighth"></button>
+                                        <button type="submit" class="fa fa-star star-button"
+                                                title="Very good!" id="ninth"></button>
+                                        <button type="submit" class="fa fa-star star-button"
+                                                title="A-M-A-Z-I-N-G" id="tenth"></button>
+                                    </form>
+                                    {%endif%}
+                                </div>
+                                <br>
+                                <div id="confirm-box"></div>
+                            </div>
+                        </div>
+                        {%else%}
+                        <h3>The game is not released yet! :(</h3>
+                        {%endif%}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--About section-->
+<section id="about_section" class="m-3">
+    <div class="container">
+        <div class="row align-items-center"  >
+            <div class="p-2 card" id="about_game"  >
+                <div class="card-header">
+                    <h2>Synopsis:</h2>
+                </div>
+                <p style="font-size:18px"><span>{{game.description}}</span></p>
+            </div>
+        </div>
+    </div>
+</section>
+<!--Game trailers section-->
+<section id="game_trailers_section" class="m-4">
+    <div class="container">
+        <div class="row align-items-center"  >
+            <div class="p-2 card" id="trailers"  >
+                <div class="card-header"><h2>Trailers:</h2></div>
+                {%for trailer in trailers%}
+                <div>
+                    <iframe class="p-2" width="auto" height="500px" allowfullscreen style="width:100%"
+                            src="https://www.youtube.com/embed/{{trailer.youtube_id}}"></iframe>
+                </div>
+                {%endfor%}
+            </div>
+        </div>
+    </div>
+</section>
+
+{%endblock%}
+{%block add_js%}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('myChart');
+   new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Just leave me crying -- {{percent_of.1}}%',
+      'Horrible -- {{percent_of.2}}%',
+      'Terrible --  {{percent_of.3}}%',
+      'Why do I even played this? -- {{percent_of.4}}%',
+      'And I spend amount of hours... on this? -- {{percent_of.5}}%',
+      'Did it the spark of potential I see? -- {{percent_of.6}}%',
+      'Will do -- {{percent_of.7}}%', 'Good -- {{percent_of.8}}%',
+      'Very good! -- {{percent_of.9}}%', 'A-M-A-Z-I-N-G -- {{percent_of.10}}%'],
+      datasets: [{
+        label: 'Users rated',
+        data: [{{scores_by.1}}, {{scores_by.2}}, {{scores_by.3}},
+        {{scores_by.4}}, {{scores_by.5}}, {{scores_by.6}},
+        {{scores_by.7}}, {{scores_by.8}}, {{scores_by.9}}, {{scores_by.10}}],
+        borderWidth: 1,
+         backgroundColor: [
+      'rgb(153, 151, 151)',
+      'rgb(153, 151, 151)',
+      'rgb(2, 148, 0)',
+      'rgb(2, 148, 0)',
+      'rgb(0, 20, 148)',
+      'rgb(0, 20, 148)',
+      'rgb(48, 4, 112)',
+      'rgb(48, 4, 112)',
+      'rgb(255, 221, 0)',
+      'rgb(255, 221, 0)',
+    ],
+      }]
+    },
+    options: {
+    plugins:{
+    legend: {
+      display: false
+    },
+   }
+  }
+
+  });
+
+
+
+
+
+
+
+</script>
+<script src="../../static/js/stars.js?var={{time}}"></script>
+{%endblock%}

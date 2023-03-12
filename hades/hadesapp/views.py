@@ -9,7 +9,7 @@ from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from .forms import *
 from django.contrib.auth.decorators import login_required
-from .models import Developer, Genre, Game
+from .models import *
 from django.conf import settings
 from pathlib import Path
 from .decorators import allowed_users, admin_only, authenticated_user
@@ -20,6 +20,7 @@ from django.http import JsonResponse
 from .utils import profile_pic as avatar
 from django.db.models import Sum
 from decimal import *
+
 
 # Create your views here.
 
@@ -130,11 +131,10 @@ def games(request):
         attachment_form = AttachmentForm(request.POST, request.FILES)
         game_form = GameForm(request.POST)
         if game_form.is_valid() and attachment_form.is_valid():
-            print('game_form is valid')
-            print('and attachment form too')
             new_saved_game = game_form.save()
             new_attachment = attachment_form.save(commit=False)
             new_attachment.game = new_saved_game
+            print(new_attachment.game_image)
             new_attachment.save()
             return redirect('games')
     context = {'title': 'UGF | Games', 'game_form': game_form, 'game': game, 'attachment_form': attachment_form,
@@ -157,7 +157,11 @@ def update_game(request, slug):
         if game_form.is_valid() and attachment_form.is_valid():
             filename = Path(f'{settings.MEDIA_ROOT}\\{picture_for_delete}'.replace('/', '\\'))
             try:
-                filename.unlink()
+                if attachment.game_image == attachment_form.clean_game_image():
+                    print(attachment.game_image, '==', attachment_form.clean_game_image())
+                    pass
+                else:
+                    filename.unlink()
             except FileNotFoundError as err:
                 print(err)
             new_updated_game = game_form.save()
@@ -241,27 +245,34 @@ Genres CRUD finished.
 @allowed_users(allowed_roles=['admins', 'custom_users', 'newbies'])
 def game_page(request, slug):
     game = Game.objects.get(slug=slug)
+    developer = Developer.objects.get(id=game.developer_id)
+    genres_of_game = game.genres.all()
     image = GameAttachment.objects.get(game=game)
     trailers = GameTrailer.objects.filter(game=game).all()
     voters = GameRate.objects.filter(game=game).count()
     sum_of_scores = GameRate.objects.filter(game=game).aggregate(all_scores=Sum('score'))
-    average_score = round(sum_of_scores['all_scores'] / voters, 2)
-    already_voted = GameRate.objects.filter(user_id=request.user.id).exists()
-    user_score = GameRate.objects.filter(user_id=request.user.id).first()
+    average_score = round(sum_of_scores['all_scores'] / voters, 2) if sum_of_scores['all_scores'] is not None else 0
+    already_voted = GameRate.objects.filter(user_id=request.user.id, game_id=game.id).exists()
+    user_score = GameRate.objects.filter(user_id=request.user.id, game_id=game.id).first()
     time = datetime.now().timestamp()
+    is_released = True
+    if game.date_of_release > datetime.now().date():
+        is_released = False
     percent_of = {}
     scores_by = {}
     for score in range(1, 11):
         scores_by.update({score: GameRate.objects.filter(game=game, score=score).count()})
     for key, percent in scores_by.items():
-        percent_of.update({key: round(percent /(voters/100), 2)})
+        if sum_of_scores['all_scores'] is not None:
+            percent_of.update({key: round(percent / (voters / 100), 2)})
     context = {
         'title': f'UGF | {game.name}', 'game': game, 'img_path': image.game_image,
         'trailers': trailers, 'scores_by': scores_by, 'already_voted': already_voted,
-        'user_score': user_score, 'average_score': average_score, 'time': time, 'percent_of':percent_of
+        'user_score': user_score, 'average_score': average_score, 'time': time, 'percent_of': percent_of,
+        'is_released': is_released, 'genres': genres_of_game, 'developer': developer
 
     }
-    return render(request, 'hadesapp/game_page.html', context)
+    return render(request, 'hadesapp/game_page_2.html', context)
 
 
 def rate(request):
@@ -275,10 +286,10 @@ def rate(request):
     return JsonResponse({'success': 'false'})
 
 
-def delete_rate(request):
+def delete_rate(request, slug):
     if request.method == 'POST':
-        obj = GameRate.objects.get(user_id=request.user.id)
-        game = Game.objects.get(id=obj.game_id)
+        game = Game.objects.get(slug=slug)
+        obj = GameRate.objects.get(user_id=request.user.id, game_id=game.id)
         obj.delete()
         return redirect('game_page', game.slug)
 

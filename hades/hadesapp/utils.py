@@ -53,3 +53,6 @@ def profile_pic(user):
     else:
         filepath = '/images/defaults/profile_pic/default_logo.png'
     return filepath
+
+
+

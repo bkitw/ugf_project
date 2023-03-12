@@ -5,9 +5,9 @@ from django.contrib.auth.models import User, AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 
-def user_directory_path(instance, filename):
-    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
-    return 'images/file_{0}/{1}'.format(slugify_instance_name(instance.game), filename)
+def game_directory_path(instance, filename):
+    # file will be uploaded to MEDIA_ROOT/file_<name>/<filename>
+    return 'images/file_{0}/{1}'.format(instance.game.slug, filename)
 
 
 def profile_pic_directory_path(instance, filename):
@@ -76,7 +76,7 @@ class Game(models.Model):
 
 class GameAttachment(models.Model):
     game = models.ForeignKey(Game, null=True, on_delete=models.CASCADE)
-    game_image = models.ImageField(blank=True, null=True, upload_to=user_directory_path)
+    game_image = models.ImageField(blank=True, null=True, upload_to=game_directory_path)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
