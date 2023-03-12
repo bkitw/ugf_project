@@ -13,12 +13,12 @@ from .models import *
 from django.conf import settings
 from pathlib import Path
 from .decorators import allowed_users, admin_only, authenticated_user
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from .filters import UserFilter
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from .utils import profile_pic as avatar
-from django.db.models import Sum
+from django.db.models import Sum, Q, Max
 from decimal import *
 
 
@@ -26,7 +26,18 @@ from decimal import *
 
 @login_required(login_url='login')
 def main(request):
-    context = {'title': 'UGF | Home'}
+    this_month = datetime.now().date()
+    last_month = (this_month - timedelta(days=15)).replace(day=datetime.now().today().day)
+    games = Game.objects.all()
+    last_three = {}
+    for game in games:
+        if last_month < game.date_of_release < this_month:
+            sum_score = GameRate.objects.filter(game=game).aggregate(all_scores=Sum('score'))['all_scores']
+            if sum_score is None:
+                continue
+            last_three.update({game: round(sum_score / GameRate.objects.filter(game=game).count(), 2)})
+    print(last_three)
+    context = {'title': 'UGF | Home', 'last_three': last_three}
     return render(request, 'hadesapp/main.html', context)
 
 
