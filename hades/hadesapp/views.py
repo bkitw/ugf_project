@@ -52,7 +52,7 @@ def registration_page(request):
             username = form.cleaned_data.get('username')
             return redirect("login")
     context = {'form': form, 'title': 'UGF | SignIn', }
-    return render(request, 'hadesapp/registration_2.html', context)
+    return render(request, 'hadesapp/registration.html', context)
 
 
 @authenticated_user
@@ -70,7 +70,7 @@ def login_page(request):
     context = {
         'title': 'UGF | LogIn'
     }
-    return render(request, 'hadesapp/login_2.html', context)
+    return render(request, 'hadesapp/login.html', context)
 
 
 def logout_user(request):
@@ -284,7 +284,7 @@ def game_page(request, slug):
         'is_released': is_released, 'genres': genres_of_game, 'developer': developer
 
     }
-    return render(request, 'hadesapp/game_page_2.html', context)
+    return render(request, 'hadesapp/game_page.html', context)
 
 
 def rate(request):
