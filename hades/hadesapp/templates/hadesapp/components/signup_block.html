@@ -1,28 +1,40 @@
 <section id="main_game_info_section" class="position-absolute top-50 start-50 translate-middle">
     <div class="container">
-        <div class="row" >
-            <div class="col" >
-                <div class="row align-items-center" >
-                    <div class="col p-3" >
-                        <form  method="POST" action="">
+        <div class="row">
+            <div class="col">
+                <div class="row align-items-center">
+                    <div class="col p-3">
+                        <form method="POST" action="">
                             {% csrf_token %}
-                            <fieldset >
-                                {%if form.errors.username%}
-                                <div class="alert alert-warning" role="alert" style="width:96%">
-                                    {{ form.errors.username}}
-                                </div>
-                                {%endif%}
+                            <div class="col p-2"></div>
+                            {%if form.errors.username%}
+                            <div class="alert alert-warning" role="alert" style="width:96%">
+                                {{ form.errors.username}}
+                            </div>
+                            {%endif%}
+                            {%if form.errors.email%}
+                            <div class="alert alert-warning" role="alert" style="width:96%">
+                                {{form.errors.email}}
+                            </div>
+                            {%endif%}
+
+                            {%if form.errors.password1%}
+                            <div class="alert alert-warning" role="alert" style="width:96%">
+                                {{ form.errors.password1}}
+                            </div>
+                            {%endif%}
+                            {%if form.errors.password2%}
+                            <div class="alert alert-warning" role="alert" style="width:96%">
+                                {{ form.errors.password2}}
+                            </div>
+                            {%endif%}
+                            <fieldset>
                                 <div class="input-group flex-nowrap reg-forms" style="width:95%">
-                                    <span class="input-group-text" style="width:160px">{{form.username.label}}*</span>
+                                    <span class="input-group-text" style="width:160px">{{form.username.label}} *</span>
                                     {{form.username}}
                                 </div>
-                                {%if form.errors.email%}
-                                <div class="alert alert-warning" role="alert" style="width:96%">
-                                    {{form.errors.email}}
-                                </div>
-                                {%endif%}
                                 <div class="input-group flex-nowrap reg-forms" style="width:95%">
-                                    <span class="input-group-text" style="width:160px">{{form.email.label}}*</span>
+                                    <span class="input-group-text" style="width:160px">{{form.email.label}} **</span>
                                     {{form.email}}
                                 </div>
 
@@ -34,27 +46,20 @@
                                     <span class="input-group-text" style="width:160px">{{form.last_name.label}}</span>
                                     {{form.last_name}}
                                 </div>
-
-                                {%if form.errors.password1%}
-                                <div class="alert alert-warning" role="alert" style="width:96%">
-                                    {{ form.errors.password1}}
-                                </div>
-                                {%endif%}
                                 <div class="input-group flex-nowrap reg-forms" style="width:95%">
-                                    <span class="input-group-text" style="width:160px">Password*</span>
+                                    <span class="input-group-text" style="width:160px">Password *</span>
                                     {{form.password1}}
                                 </div>
-                                {%if form.errors.password2%}
-                                <div class="alert alert-warning" role="alert" style="width:96%">
-                                    {{ form.errors.password2}}
-                                </div>
-                                {%endif%}
+
                                 <div class="input-group flex-nowrap reg-forms" style="width:95%">
-                                    <span class="input-group-text" style="width:160px">Confirm password*</span>
+                                    <span class="input-group-text" style="width:160px">Confirm password *</span>
                                     {{form.password2}}
                                 </div>
                                 <button class="btn btn-outline-success m-2 " role="button">Take It</button>
-                                <p class="m-3">Already have an account? <b>|</b> <a href="{% url 'login'%}"> Log In</a></p>
+                                <p class="m-2">* - fields, required to fill.</p>
+                                <p class="m-2">** - email cannot be changed after registration!</p>
+                                <p class="m-2">Already have an account? <b>|</b> <a href="{% url 'login'%}"> Log In</a>
+                                </p>
                             </fieldset>
                         </form>
                     </div>

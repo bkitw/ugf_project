@@ -18,8 +18,9 @@ from .filters import UserFilter
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from .utils import profile_pic as avatar
-from django.db.models import Sum, Q, Max
+from django.db.models import Sum, Max, Avg
 from decimal import *
+from django.db.models.functions import Round
 
 
 # Create your views here.
@@ -28,17 +29,11 @@ from decimal import *
 def main(request):
     this_month = datetime.now().date()
     last_month = (this_month - timedelta(days=15)).replace(day=datetime.now().today().day)
-    games = Game.objects.all()
-    last_three = []
-    for game in games:
-        if last_month < game.date_of_release < this_month:
-            sum_score = GameRate.objects.filter(game=game).aggregate(all_scores=Sum('score'))['all_scores']
-            if sum_score is None:
-                continue
-            last_three.append(
-                {'game_title': game, 'game_score': round(sum_score / GameRate.objects.filter(game=game).count(), 2)})
-    print(last_three)
-    context = {'title': 'UGF | Home', 'last_three': last_three}
+    games = Game.objects.filter(date_of_release__gte=last_month,
+                                date_of_release__lte=this_month).annotate(avg_score=Round(Avg('gamerate__score'),
+                                                                                          2), ).order_by(
+        '-avg_score').all()[:3]
+    context = {'title': 'UGF | Home', 'games': games}
     return render(request, 'hadesapp/main.html', context)
 
 
@@ -56,7 +51,7 @@ def registration_page(request):
 
 
 @authenticated_user
-def login_page(request):
+def login_page(request) -> render or redirect:
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -392,11 +387,8 @@ def user_search(request):
     p = Paginator(users, 5)
     page = request.GET.get('page')
     users_pages = p.get_page(page)
-    print(users)
-    print(users_pages)
-    print(data)
     context = {
         'my_filter': my_filter, 'users': users, 'title': 'UGF | Search',
-        'users_pages': users_pages, 'data':data
+        'users_pages': users_pages, 'data': data
     }
     return render(request, 'hadesapp/user_search.html', context)

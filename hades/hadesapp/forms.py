@@ -53,10 +53,10 @@ class CreateCustomUserForm(UserCreationForm):
         fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2',
                   ]
 
-    username = forms.CharField(required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    username = forms.CharField(required=True,max_length=50, widget=forms.TextInput(attrs={'class': 'form-control'}))
     email = forms.EmailField(required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
-    first_name = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
-    last_name = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    first_name = forms.CharField(required=False, max_length=50, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    last_name = forms.CharField(required=False, max_length=50, widget=forms.TextInput(attrs={'class': 'form-control'}))
     password1 = forms.CharField(required=True,
                                 widget=forms.TextInput(attrs={'class': 'form-control', 'type': 'password'}))
     password2 = forms.CharField(required=True,
@@ -69,10 +69,10 @@ class UpdateCustomUserForm(UserChangeForm):
         fields = ['username', 'first_name', 'last_name', 'email', 'date_of_birth', 'gender',
                   'about_me', 'followers', 'profile_pic']
 
-    username = forms.CharField(required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    username = forms.CharField(required=True, max_length=50, widget=forms.TextInput(attrs={'class': 'form-control'}))
     email = forms.EmailField(required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
-    first_name = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
-    last_name = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    first_name = forms.CharField(required=False, max_length=50, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    last_name = forms.CharField(required=False, max_length=50, widget=forms.TextInput(attrs={'class': 'form-control'}))
     date_of_birth = forms.DateField(required=False, widget=forms.DateInput(attrs={'type': 'date'}))
     about_me = forms.CharField(required=False, widget=forms.Textarea(attrs={"rows": "5", 'class': 'form-control'}))
     followers = forms.ModelMultipleChoiceField(required=False, queryset=CustomUser.objects.all(), )

@@ -7,12 +7,12 @@
                 <div class="row align-items-center" style="border:solid; border-size:1px">
                     <div class="col-4 m-3" style="border:solid; border-size:1px">
                         <ul class="list-group list-group-flush">
-                            {% for game in last_three|dictsortreversed:"game_score" %}
+                            {% for game in games%}
                             <li class="list-group-item">
-                                <h5><b><a href="{%url 'game_page' game.game_title.slug%}" style="text-decoration:none;">
-                                    <span style="color:black">{{game.game_title.name}}</span></a>
+                                <h6><b><a href="{%url 'game_page' game.slug%}" style="text-decoration:none;">
+                                    <span style="color:black">{{game.name}}</span></a>
                                     --
-                                    <span style="color:grey">✪ {{game.game_score}}</span></b></h5></li>
+                                    <span style="color:grey">✪ {{game.avg_score}}</span></b></h6></li>
                             {%endfor%}
                         </ul>
                     </div>
