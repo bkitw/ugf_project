@@ -52,7 +52,7 @@ def registration_page(request):
             username = form.cleaned_data.get('username')
             return redirect("login")
     context = {'form': form, 'title': 'UGF | SignIn', }
-    return render(request, 'hadesapp/registration.html', context)
+    return render(request, 'hadesapp/registration_2.html', context)
 
 
 @authenticated_user
@@ -70,7 +70,7 @@ def login_page(request):
     context = {
         'title': 'UGF | LogIn'
     }
-    return render(request, 'hadesapp/login.html', context)
+    return render(request, 'hadesapp/login_2.html', context)
 
 
 def logout_user(request):
@@ -384,14 +384,19 @@ def following(request, pk):
 
 
 def user_search(request):
+    submitted = 'submitted' in request.GET
+    data = request.GET if submitted else None
     users = CustomUser.objects.all()
-    my_filter = UserFilter(request.GET, queryset=users)
+    my_filter = UserFilter(data, queryset=users)
     users = my_filter.qs
     p = Paginator(users, 5)
     page = request.GET.get('page')
     users_pages = p.get_page(page)
+    print(users)
+    print(users_pages)
+    print(data)
     context = {
         'my_filter': my_filter, 'users': users, 'title': 'UGF | Search',
-        'users_pages': users_pages,
+        'users_pages': users_pages, 'data':data
     }
     return render(request, 'hadesapp/user_search.html', context)

@@ -10,8 +10,25 @@
   border-radius: 50%;
 }
 </style>
-
+<div class="row">
+    <div class="col">
+        <div class="card card-body">
+            <form method="get">
+                {{my_filter.form.as_p}}
+                <button class="btn btn-success" name="submitted" type="submit">
+                    search
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
 <div class="card my-4">
+    {%if not data%}
+    <h3 class="text-center m-2">Enter the search properties.</h3>
+    {%else%}
+    {%if not users%}
+    <h3 class="text-center m-2">No results by that filters.</h3>
+    {%else%}
     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
         <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
             <h6 class="text-black text-capitalize ps-3">Search results:</h6>
@@ -65,6 +82,8 @@
             </table>
         </div>
     </div>
+    {%endif%}
+    {%endif%}
 </div>
 <!--pagination-->
 

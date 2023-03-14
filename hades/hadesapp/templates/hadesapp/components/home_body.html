@@ -5,13 +5,18 @@
         <div class="row" style="border:solid; border-size:1px">
             <div class="col" style="border:solid; border-size:1px">
                 <div class="row align-items-center" style="border:solid; border-size:1px">
-                    <div class="col-3 m-3" style="border:solid; border-size:1px">
-                         {% for game in last_three|dictsortreversed:"game_score" %}
-                        <p><b><a  href="{%url 'game_page' game.game_title.slug%}" style="text-decoration:none;">{{game.game_title}} --
-                            <span>✪ {{game.game_score}}</span></a></b></p>
-                        {%endfor%}
+                    <div class="col-4 m-3" style="border:solid; border-size:1px">
+                        <ul class="list-group list-group-flush">
+                            {% for game in last_three|dictsortreversed:"game_score" %}
+                            <li class="list-group-item">
+                                <h5><b><a href="{%url 'game_page' game.game_title.slug%}" style="text-decoration:none;">
+                                    <span style="color:black">{{game.game_title.name}}</span></a>
+                                    --
+                                    <span style="color:grey">✪ {{game.game_score}}</span></b></h5></li>
+                            {%endfor%}
+                        </ul>
                     </div>
-                    <div class="col-8 m-3" style="border:solid; border-size:1px">
+                    <div class="col-6 m-3" style="border:solid; border-size:1px">
                         <div class="card" style="width: 18rem;">
                             <div class="card-body">
                                 <h5 class="card-title">Card title</h5>

@@ -1,0 +1,35 @@
+<section id="main_game_info_section" class="position-absolute top-50 start-50 translate-middle">
+    <div class="container" >
+        <div class="row" >
+            <div class="col" >
+                <div class="row align-items-center" >
+                    <div class="col p-3">
+                        <form  method="POST" action="">
+                            {% csrf_token %}
+                            <form method="POST" action="" style="width:100%">
+        {% csrf_token %}
+        <fieldset>
+            {%for message in messages%}
+            <div class="alert alert-warning" role="alert" style="width:96%">
+                {{message}}
+            </div>
+            {%endfor%}
+            <div class="input-group flex-nowrap reg-forms" style="width:95%">
+                <span class="input-group-text" style="width:110px">Username</span>
+                <input type="text" name="username" class="form-control" required="">
+            </div>
+            <div class="input-group flex-nowrap reg-forms" style="width:95%">
+                <span class="input-group-text" style="width:110px">Password</span>
+                <input type="password" name="password" class="form-control" required=""/>
+            </div>
+            <button class="btn btn-outline-success m-2" role="button">Let Me In</button>
+            <p>Haven't registered yet? <b>|</b> <a href="{% url 'registration'%}"> Sign Up</a></p>
+        </fieldset>
+    </form>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

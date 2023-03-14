@@ -1,11 +1,13 @@
 <header>
     <nav class="navbar navbar-expand-lg" style="background-color: #7c81ff;">
-        <div class="container-xl">
+        <div class="container-lg">
             <a class="navbar-brand" href="{%url 'main'%}"><b>UFG</b></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            {%if '/registration' in request.path or '/login' in request.path %}
+            {%else%}
             <div class="collapse navbar-collapse" id="Header_nav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
@@ -33,6 +35,7 @@
                         &#x26A1;</a>
                     </li>
                 </ul>
+                 {%endif%}
             </div>
         </div>
     </nav>
