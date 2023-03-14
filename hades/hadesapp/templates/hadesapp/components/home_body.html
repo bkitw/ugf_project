@@ -6,9 +6,9 @@
             <div class="col" style="border:solid; border-size:1px">
                 <div class="row align-items-center" style="border:solid; border-size:1px">
                     <div class="col-3 m-3" style="border:solid; border-size:1px">
-                        {%for game, score in last_three.items%}
-                        <p><b><a  href="{%url 'game_page' game.slug%}" style="text-decoration:none;">{{game.name}} --
-                            <span>✪ {{score}}</span></a></b></p>
+                         {% for game in last_three|dictsortreversed:"game_score" %}
+                        <p><b><a  href="{%url 'game_page' game.game_title.slug%}" style="text-decoration:none;">{{game.game_title}} --
+                            <span>✪ {{game.game_score}}</span></a></b></p>
                         {%endfor%}
                     </div>
                     <div class="col-8 m-3" style="border:solid; border-size:1px">
