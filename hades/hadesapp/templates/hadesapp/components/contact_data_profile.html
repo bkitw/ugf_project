@@ -1,15 +1,27 @@
+{%load static%}
+<style>
+    .avatar {
+  vertical-align: middle;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+
+</style>
 <div class="card mt-3">
     <ul class="list-group list-group-flush">
         {%if main_user%}
         <li class="list-group-item d-flex justify-content-center align-items-center flex-wrap">
-            <form action="{%url 'subscriptions' request.user.username%}">
-                <button class="btn btn-success btn-lg">SUBSCRIBES</button>
-            </form>
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                <b>SUBSCRIBES</b>
+            </button>
         </li>
         {%endif%}
         {%if not main_user%}
         <li class="list-group-item d-flex justify-content-center align-items-center flex-wrap">
-            <form action="{%url 'following' username%}" method="post" >
+            <form action="{%url 'following' username%}" method="post">
                 {%csrf_token%}
                 {%if profile in request.user.followers.all%}
                 <button class="btn btn-danger btn-lg" name="following" value="unfollow">UNFOLLOW</button>
@@ -23,4 +35,67 @@
         </li>
         {%endif%}
     </ul>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">I follow / They follow</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container text-center">
+                    <div class="row ">
+                        <div class="col">
+                            <div class="card border-warning mb-3" style="max-width: 18rem; margin:auto">
+                                <div class="card-header">I follow them:</div>
+                                <div class="card-body">
+                                    {%if not request.user.followers.all%}
+                                    <h3>...I follow noone. I'm so lonely.(</h3>
+                                    {%endif%}
+                                    {%for following in profile.followers.all%}
+                                    <ul>
+                                        <li><a href="{%url 'user_profile' following %}"
+                                               class="list-group-item list-group-item-action list-group-item-info">
+                                            <img src="{%static 'media'%}/{{following.profile_pic}}" class="avatar"
+                                                 alt="user_pic">
+                                            {{following}}</a>
+                                        </li>
+                                    </ul>
+                                    {%endfor%}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card border-warning mb-3" style="max-width: 18rem; margin:auto">
+                                <div class="card-header">They are following me:</div>
+                                <div class="card-body">
+                                    {%if not request.user.followed_by.all%}
+                                    <h3>Who follows you? It's your paranoia again?</h3>
+                                    {%endif%}
+                                    {%for following in profile.followed_by.all%}
+                                    <ul>
+                                        <li><a href="{%url 'user_profile' following %}"
+                                               class="list-group-item list-group-item-action list-group-item-info">
+                                            <img src="{%static 'media'%}/{{following.profile_pic}}" class="avatar"
+                                                 alt="user_pic">
+                                            {{following}}</a>
+                                        </li>
+                                    </ul>
+                                    {%endfor%}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-bs-dismiss="modal">Got It</button>
+            </div>
+        </div>
+    </div>
 </div>
