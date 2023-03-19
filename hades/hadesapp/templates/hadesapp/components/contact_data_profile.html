@@ -21,14 +21,12 @@
         {%endif%}
         {%if not main_user%}
         <li class="list-group-item d-flex justify-content-center align-items-center flex-wrap">
-            <form action="{%url 'following' username%}" method="post">
+            <form id="follow_form" action="{%url 'following' username%}" method="post">
                 {%csrf_token%}
                 {%if profile in request.user.followers.all%}
                 <button class="btn btn-danger btn-lg" name="following" value="unfollow">UNFOLLOW</button>
             </form>
             {%else%}
-            <form action="{%url 'following' username%}" method="post">
-                {%csrf_token%}
                 <button class="btn btn-warning btn-lg" name="following" value="follow">FOLLOW</button>
                 {%endif%}
             </form>
@@ -94,7 +92,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-info" data-bs-dismiss="modal">Got It</button>
+                <button type="button" class="btn btn-info gotit" data-bs-dismiss="modal">Got It</button>
             </div>
         </div>
     </div>

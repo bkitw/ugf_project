@@ -28,11 +28,14 @@ from django.db.models.functions import Round
 @login_required(login_url='login')
 def main(request):
     this_month = datetime.now().date()
-    last_month = (this_month - timedelta(days=15)).replace(day=datetime.now().today().day)
+    last_month = (this_month - timedelta(weeks=4)).replace(day=datetime.now().today().day)
     games = Game.objects.filter(date_of_release__gte=last_month,
                                 date_of_release__lte=this_month).annotate(avg_score=Round(Avg('gamerate__score'),
                                                                                           2), ).order_by(
         '-avg_score').all()[:3]
+    print(this_month)
+    print(last_month)
+    print(games)
     context = {'title': 'UGF | Home', 'games': games}
     return render(request, 'hadesapp/main.html', context)
 
@@ -370,10 +373,9 @@ def following(request, pk):
         action = request.POST['following']
         if action == 'follow':
             current_user.followers.add(profile)
-            return redirect('user_profile', profile.username)
         elif action == 'unfollow':
             current_user.followers.remove(profile)
-            return redirect('user_profile', profile.username)
+        return JsonResponse({'success': 'true',}, safe=False)
     context = {}
     return redirect('user_profile', request.user.username)
 

@@ -24,9 +24,8 @@
                                     <img src="{%static 'media'%}/{{profile_pic}}"
                                          alt="place for your profile picture"
                                          class="rounded-circle" width="150">
-                                    <div class="mt-3">
-                                        <h4>{{username}}</h4>
-                                        <!--                                        <p class="text-secondary mb-1">{{first_name}} {{last_name}}</p>-->
+                                    <div class="mt-3 username-box">
+                                        <h4 class="main-username">{{username}}</h4>
                                         <p class="text-muted font-size-sm">On <b>UGF</b> about {{days_on_site}} days</p>
                                         {%if main_user%}
                                         <a href="{%url 'logout'%}">
@@ -114,4 +113,53 @@
         </div>
     </div>
 </section>
+{%endblock%}
+{%block add_js%}
+<script>
+$( document ).ready(function() {
+    console.log( "ready!" );
+    // Simple jQuery examples:
+    // let mainUsernameSelector = $(".main-username");
+    // mainUsernameSelector.on("mouseenter", function(e) {
+    //     console.log(e)
+    //     $(this).css({background: "pink"});
+    // });
+    // mainUsernameSelector.on("mouseleave", function(e) {
+    //     $(this).css({background: "transparent"});
+    // });
+    // mainUsernameSelector.one("click", function(e) {
+    //     $(this).after("<p class='goodbye'>Goodbye, Mr.Anderson.</p>");
+    // });
+    // $(".username-box").on("mouseenter", ".goodbye", function(e){
+    //     $(this).css({background:"yellow"});
+    // });
+
+    $("button[name='following']").on("click", function(e){
+        e.preventDefault();
+        let laButton = $(this);
+        let followValue = laButton.val();
+        let data = {
+            following: followValue,
+            'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val(),
+        };
+
+        $.ajax({
+        type: 'POST',
+          url: $("form#follow_form").attr('action'),
+          data: data,
+          success: function( result ) {
+            if(followValue==='follow'){
+                laButton.removeClass('btn-warning').addClass('btn-danger').val('unfollow').html('UNFOLLOW');
+            }else{
+                laButton.removeClass('btn-danger').addClass('btn-warning').val('follow').html('FOLLOW');
+            };
+          },
+          error: function( result ){
+            alert('Oopsie!');
+          }
+        });
+    });
+
+});
+</script>
 {%endblock%}

@@ -53,7 +53,7 @@
                     <td>
                         <div class="d-flex px-2 py-1">
                             <div>
-                                <img src="{%static 'media'%}/{{user.profile_pic}}" class="avatar avatar-sm me-3 border-radius-lg"
+                                <img src="{%if user.profile_pic%}{%static 'media'%}/{{user.profile_pic}}{%else%}{%static 'media'%}/images/defaults/profile_pic/default_logo.png{%endif%}" class="avatar avatar-sm me-3 border-radius-lg"
                                      alt="user.pic">
                             </div>
                             <div class="d-flex flex-column justify-content-center">
