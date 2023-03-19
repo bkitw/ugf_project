@@ -25,7 +25,6 @@
                 {%csrf_token%}
                 {%if profile in request.user.followers.all%}
                 <button class="btn btn-danger btn-lg" name="following" value="unfollow">UNFOLLOW</button>
-            </form>
             {%else%}
                 <button class="btn btn-warning btn-lg" name="following" value="follow">FOLLOW</button>
                 {%endif%}

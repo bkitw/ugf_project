@@ -113,3 +113,17 @@ class GameRate(models.Model):
         return f'{self.game}, {self.user}, {self.score}'
 
 
+def validate_appeal_email(value):
+    if "@gmail.com" in value or value != '':
+        return value
+    else:
+        raise ValidationError("The email field is empty or incorrectly filled.")
+
+
+class Appeal(models.Model):
+    email = models.EmailField(null=False, validators=[validate_appeal_email])
+    theme = models.CharField(max_length=255, null=False)
+    message = models.TextField(null=True)
+    checked_at = models.DateTimeField(null=True)
+    checked_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)

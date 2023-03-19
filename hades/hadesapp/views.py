@@ -375,7 +375,7 @@ def following(request, pk):
             current_user.followers.add(profile)
         elif action == 'unfollow':
             current_user.followers.remove(profile)
-        return JsonResponse({'success': 'true',}, safe=False)
+        return JsonResponse({'success': 'true', }, safe=False)
     context = {}
     return redirect('user_profile', request.user.username)
 
@@ -395,7 +395,12 @@ def user_search(request):
     }
     return render(request, 'hadesapp/user_search.html', context)
 
+
 def contact_us(request):
-    ponchick = 'ponchick'
-    context = {'p':ponchick}
-    return render(request, "hadesapp/components/header_navbar.html", context)
+    appeal_form = AppealForm()
+    if request.method == 'POST':
+        email = request.POST['email']
+        theme = request.POST['theme']
+        message = request.POST['message']
+        print(email, theme, message)
+    return JsonResponse({'success': 'true', }, safe=False)

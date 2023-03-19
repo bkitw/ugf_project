@@ -53,7 +53,7 @@ class CreateCustomUserForm(UserCreationForm):
         fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2',
                   ]
 
-    username = forms.CharField(required=True,max_length=50, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    username = forms.CharField(required=True, max_length=50, widget=forms.TextInput(attrs={'class': 'form-control'}))
     email = forms.EmailField(required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
     first_name = forms.CharField(required=False, max_length=50, widget=forms.TextInput(attrs={'class': 'form-control'}))
     last_name = forms.CharField(required=False, max_length=50, widget=forms.TextInput(attrs={'class': 'form-control'}))
@@ -99,3 +99,16 @@ class UpdateCustomUserForm(UserChangeForm):
             return image
         else:
             raise ValidationError("Couldn't read uploaded image")
+
+
+class AppealForm(ModelForm):
+    class Meta:
+        model = Appeal
+        fields = ['email', 'theme', 'message']
+
+    email = forms.EmailField(required=True,
+                             widget=forms.TextInput(attrs={'class': 'form-control'}))
+    theme = forms.CharField(required=True, max_length=50,
+                            widget=forms.TextInput(attrs={'class': 'form-control',}))
+    message = forms.CharField(required=False, max_length=1000,
+                              widget=forms.Textarea(attrs={'class': 'form-control', }))

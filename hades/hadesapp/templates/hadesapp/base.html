@@ -18,11 +18,103 @@
 {%endblock%}
 <!--Here goes footer-->
 <!--{%include 'hadesapp/components/footer.html'%}-->
+<!-- Modal Contact Us-->
+<div class="modal fade" id="contact-me-form" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Please, give us your feedback:</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="contact_us_form" action="{%url 'contact_us'%}" method="post">
+                {%csrf_token%}
+                <div class="modal-body">
+                    <fieldset>
+                        {%if appeal_form.errors.email%}
+                            <div class="alert alert-warning" role="alert" style="width:96%">
+                                {{ appeal_form.errors.email}}
+                            </div>
+                            {%endif%}
+                        {%if appeal_form.errors.theme%}
+                            <div class="alert alert-warning" role="alert" style="width:96%">
+                                {{ appeal_form.errors.theme}}
+                            </div>
+                            {%endif%}
+                        <div class="mb-3">
+                            <label class="form-label"><b>* {{appeal_form.email.label}}:</b></label>
+                            {{appeal_form.email}}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label"><b>* {{appeal_form.theme.label}}:</b></label>
+                            {{appeal_form.theme}}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label"><b>{{appeal_form.message.label}}</b></label>
+                            {{appeal_form.message}}
+                        </div>
+                    </fieldset>
+                    <p><i>* -- required fields!</i></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" name="send_appeal" class="btn btn-success">SEND!</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
 </body>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="../../static/js/bootstrap.bundle.min.js"></script>
+<script>
+$( document ).ready(function() {
+    console.log( "ready!" );
+    // Simple jQuery examples:
+    // let mainUsernameSelector = $(".main-username");
+    // mainUsernameSelector.on("mouseenter", function(e) {
+    //     console.log(e)
+    //     $(this).css({background: "pink"});
+    // });
+    // mainUsernameSelector.on("mouseleave", function(e) {
+    //     $(this).css({background: "transparent"});
+    // });
+    // mainUsernameSelector.one("click", function(e) {
+    //     $(this).after("<p class='goodbye'>Goodbye, Mr.Anderson.</p>");
+    // });
+    // $(".username-box").on("mouseenter", ".goodbye", function(e){
+    //     $(this).css({background:"yellow"});
+    // });
+
+    $("button[name='send_appeal']").on("click", function(e){
+        e.preventDefault();
+        let laButton = $(this);
+        let data = {
+            email: $(".mb-3 input[name='email']'").val(),
+            theme: $(".mb-3  input[name='theme']'").val(),
+            message: $(".mb-3 input[name='message']'").val(),
+            'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val(),
+        };
+
+        $.ajax({
+        type: 'POST',
+          url: $("form#contact_us_form").attr('action'),
+          data: data,
+          success: function( result ) {
+            alert('Success!')
+          },
+          error: function( result ){
+            alert('Something with that gone wrong, better try again after reloading the page.')
+          }
+        });
+    });
+
+});
+</script>
+
 {%block add_js%}
 {%endblock%}
 </html>
