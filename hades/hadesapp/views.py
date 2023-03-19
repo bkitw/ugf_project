@@ -394,3 +394,8 @@ def user_search(request):
         'users_pages': users_pages, 'data': data
     }
     return render(request, 'hadesapp/user_search.html', context)
+
+def contact_us(request):
+    ponchick = 'ponchick'
+    context = {'p':ponchick}
+    return render(request, "hadesapp/components/header_navbar.html", context)

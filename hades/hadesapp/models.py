@@ -111,3 +111,5 @@ class GameRate(models.Model):
 
     def __str__(self):
         return f'{self.game}, {self.user}, {self.score}'
+
+

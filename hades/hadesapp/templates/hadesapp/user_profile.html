@@ -114,6 +114,8 @@
     </div>
 </section>
 {%endblock%}
+
+    {# ajax section! #}
 {%block add_js%}
 <script>
 $( document ).ready(function() {
@@ -155,7 +157,7 @@ $( document ).ready(function() {
             };
           },
           error: function( result ){
-            alert('Oopsie!');
+            alert('Something with that gone wrong, better try again after reloading the page.');
           }
         });
     });
