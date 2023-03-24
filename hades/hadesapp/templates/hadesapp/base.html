@@ -11,57 +11,76 @@
     <title>{{title}}</title>
 </head>
 <body>
-<!--Here goes the header-->
-{%include 'hadesapp/components/header_navbar.html'%}
-{%block content%}
-<!--Here goes main content-->
-{%endblock%}
-<!--Here goes footer-->
-<!--{%include 'hadesapp/components/footer.html'%}-->
-<!-- Modal Contact Us-->
-<div class="modal fade" id="contact-me-form" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Please, give us your feedback:</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form id="contact_us_form" action="{%url 'contact_us'%}" method="post">
-                {%csrf_token%}
-                <div class="modal-body">
-                    <fieldset>
-                        {%if appeal_form.errors.email%}
+    <!--Here goes the header-->
+    {%include 'hadesapp/components/header_navbar.html'%}
+    {%block content%}
+    <!--Here goes main content-->
+    {%endblock%}
+    <!--Here goes footer-->
+    <!--{%include 'hadesapp/components/footer.html'%}-->
+    <!-- Modal Contact Us-->
+    <div class="modal fade" id="contact-me-form" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Please, give us your feedback:</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="contact_us_form" action="{%url 'contact_us'%}" method="post">
+                    {%csrf_token%}
+                    <div class="modal-body">
+                        <div class="column m-2 warning-div"></div>
+                        <fieldset>
+                            {%if appeal_form.errors.email%}
                             <div class="alert alert-warning" role="alert" style="width:96%">
                                 {{ appeal_form.errors.email}}
                             </div>
                             {%endif%}
-                        {%if appeal_form.errors.theme%}
+                            {%if appeal_form.errors.theme%}
                             <div class="alert alert-warning" role="alert" style="width:96%">
                                 {{ appeal_form.errors.theme}}
                             </div>
                             {%endif%}
-                        <div class="mb-3">
-                            <label class="form-label"><b>* {{appeal_form.email.label}}:</b></label>
-                            {{appeal_form.email}}
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label"><b>* {{appeal_form.theme.label}}:</b></label>
-                            {{appeal_form.theme}}
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label"><b>{{appeal_form.message.label}}</b></label>
-                            {{appeal_form.message}}
-                        </div>
-                    </fieldset>
-                    <p><i>* -- required fields!</i></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" name="send_appeal" class="btn btn-success">SEND!</button>
-                </div>
-            </form>
+                            <div class="mb-3">
+                                <label class="form-label"><b>* {{appeal_form.email.label}}:</b></label>
+                                {{appeal_form.email}}
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label"><b>* {{appeal_form.theme.label}}:</b></label>
+                                {{appeal_form.theme}}
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label"><b>{{appeal_form.message.label}}</b></label>
+                                {{appeal_form.message}}
+                            </div>
+                        </fieldset>
+                        <p><i>* -- required fields!</i></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" name="send_appeal" class="btn btn-success">SEND!</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
+    <!--Modal for thanks!-->
+    <div class="modal fade" id="thanks_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="thanks_title">THANK YOU!</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <p>We really appreciate your opinion!<br>
+            (naah, screw you)</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+    </div>
+</div>
 </div>
 
 
@@ -92,27 +111,43 @@ $( document ).ready(function() {
     $("button[name='send_appeal']").on("click", function(e){
         e.preventDefault();
         let laButton = $(this);
+        let laEmail = $(".mb-3 input[name='email']").val()
+        const pattern = /^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b$/i
+        if (laEmail.length <= 0) {
+            $(".warning-div").html("<div class='alert alert-warning' role='alert'>Please, enter the email!</div>");
+                return false
+        }
+        else if (!pattern.test(laEmail)) {
+            $(".warning-div").html("<div class='alert alert-warning' role='alert'>Please, check if email written correctly!</div>");
+            return false
+        }
+        let laTheme = $(".mb-3 input[name='theme']").val()
+        if (laTheme.length <= 0) {
+            $(".warning-div").html('<div class="alert alert-warning" role="alert">Please, enter the theme of feedback!</div>');
+            return false
+        }
+        let laMessage = $(".mb-3 textarea[name='message']").val()
         let data = {
-            email: $(".mb-3 input[name='email']'").val(),
-            theme: $(".mb-3  input[name='theme']'").val(),
-            message: $(".mb-3 input[name='message']'").val(),
+            email: laEmail,
+            theme: laTheme,
+            message: laMessage,
             'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val(),
         };
 
-        $.ajax({
-        type: 'POST',
-          url: $("form#contact_us_form").attr('action'),
-          data: data,
-          success: function( result ) {
-            alert('Success!')
-          },
-          error: function( result ){
-            alert('Something with that gone wrong, better try again after reloading the page.')
-          }
+            $.ajax({
+                type: 'POST',
+                url: $("form#contact_us_form").attr('action'),
+                data: data,
+                success: function( result ) {
+                    $('#contact-me-form').modal('toggle');
+                    $('#thanks_modal').modal('toggle');
+                },
+                error: function( result ){
+                    alert('Something with that gone wrong, better try again after reloading the page.')
+                }
+            });
         });
     });
-
-});
 </script>
 
 {%block add_js%}

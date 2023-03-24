@@ -399,8 +399,16 @@ def user_search(request):
 def contact_us(request):
     appeal_form = AppealForm()
     if request.method == 'POST':
-        email = request.POST['email']
-        theme = request.POST['theme']
-        message = request.POST['message']
-        print(email, theme, message)
-    return JsonResponse({'success': 'true', }, safe=False)
+        appeal_form = AppealForm(request.POST)
+        print(appeal_form)
+        if appeal_form.is_valid():
+            print('form is valid')
+            email = request.POST['email']
+            print(f'this is email -- {email}')
+            theme = request.POST['theme']
+            print(f'this is theme --{theme}')
+            message = request.POST['message']
+            print(f'this is message -- {message}')
+            appeal_form.save()
+            return JsonResponse({'success': 'true', }, safe=False)
+    return JsonResponse({'success': 'false', }, safe=False)
