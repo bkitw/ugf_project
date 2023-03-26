@@ -31,21 +31,21 @@
                     <div class="modal-body">
                         <div class="column m-2 warning-div"></div>
                         <fieldset>
-                            {%if appeal_form.errors.email%}
-                            <div class="alert alert-warning" role="alert" style="width:96%">
-                                {{ appeal_form.errors.email}}
-                            </div>
-                            {%endif%}
-                            {%if appeal_form.errors.theme%}
-                            <div class="alert alert-warning" role="alert" style="width:96%">
-                                {{ appeal_form.errors.theme}}
-                            </div>
-                            {%endif%}
                             <div class="mb-3">
+                            <div class="alert alert-warning" role="alert" style="width:96%; display:none" data-field='email'>
+                                {%if appeal_form.errors.email%}
+                                {{ appeal_form.errors.email}}
+                                {%endif%}
+                            </div>
                                 <label class="form-label"><b>* {{appeal_form.email.label}}:</b></label>
                                 {{appeal_form.email}}
                             </div>
                             <div class="mb-3">
+                            <div class="alert alert-warning" role="alert" style="width:96%; display:none" data-field='theme'>
+                                {%if appeal_form.errors.theme%}
+                                {{ appeal_form.errors.theme}}
+                                {%endif%}
+                            </div>
                                 <label class="form-label"><b>* {{appeal_form.theme.label}}:</b></label>
                                 {{appeal_form.theme}}
                             </div>
@@ -107,7 +107,7 @@ $( document ).ready(function() {
     // $(".username-box").on("mouseenter", ".goodbye", function(e){
     //     $(this).css({background:"yellow"});
     // });
-
+    $(".mb-3 input[name='email']").val('{{request.user.email}}')
     $("button[name='send_appeal']").on("click", function(e){
         e.preventDefault();
         let laButton = $(this);
@@ -143,7 +143,24 @@ $( document ).ready(function() {
                     $('#thanks_modal').modal('toggle');
                 },
                 error: function( result ){
-                    alert('Something with that gone wrong, better try again after reloading the page.')
+                    console.log(result.responseJSON.error)
+                    console.log(result.status)
+                    let themeWarning = $('#contact-me-form .alert-warning[data-field="theme"]')
+                    let emailWarning = $('#contact-me-form .alert-warning[data-field="email"]')
+                    if (result.responseJSON && result.responseJSON.error){
+                        if (result.responseJSON.error.email){
+                            emailWarning.html(result.responseJSON.error.email.join('<br>')).show()
+                        }else{
+                            emailWarning.html('').hide()
+                        }
+                        if (result.responseJSON.error.theme){
+                            themeWarning.html(result.responseJSON.error.theme.join('<br>')).show()
+                        }else{
+                            themeWarning.html('').hide()
+                        }
+                    }else{
+                        alert('Something with that gone wrong.')
+                    }
                 }
             });
         });

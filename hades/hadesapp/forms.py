@@ -107,8 +107,8 @@ class AppealForm(ModelForm):
         fields = ['email', 'theme', 'message']
 
     email = forms.EmailField(required=True,
-                             widget=forms.TextInput(attrs={'class': 'form-control'}))
+                             widget=forms.TextInput(attrs={'class': 'form-control', }))
     theme = forms.CharField(required=True, max_length=50,
-                            widget=forms.TextInput(attrs={'class': 'form-control',}))
+                            widget=forms.TextInput(attrs={'class': 'form-control', }))
     message = forms.CharField(required=False, max_length=1000,
                               widget=forms.Textarea(attrs={'class': 'form-control', }))

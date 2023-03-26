@@ -400,7 +400,6 @@ def contact_us(request):
     appeal_form = AppealForm()
     if request.method == 'POST':
         appeal_form = AppealForm(request.POST)
-        print(appeal_form)
         if appeal_form.is_valid():
             print('form is valid')
             email = request.POST['email']
@@ -410,5 +409,7 @@ def contact_us(request):
             message = request.POST['message']
             print(f'this is message -- {message}')
             appeal_form.save()
-            return JsonResponse({'success': 'true', }, safe=False)
-    return JsonResponse({'success': 'false', }, safe=False)
+            return JsonResponse({'success': 'true' }, safe=False)
+    response = JsonResponse({'error': appeal_form.errors})
+    response.status_code = 400
+    return response
