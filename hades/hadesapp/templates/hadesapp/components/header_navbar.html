@@ -33,15 +33,22 @@
                 </ul>
                 <div class="column profile-contact-me float-end ">
                     <ul class="navbar-nav">
+                        {%if '/user_profile' in request.path and request.user.is_staff %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{%url 'appeals'%}" title="There's {{new_appeals}} new appeals!">&#128126; <span
+                                    class="badge rounded-pill text-bg-warning">{{new_appeals}}</span></a>
+                        </li>
+                        {%else%}
                         <li class="nav-item">
                             <!-- Button trigger modal -->
 
                             <button type="button" style="text-decoration:none" class="btn btn-link nav-link"
-                                    data-bs-toggle="modal" data-bs-target="#contact-me-form">
+                                    data-bs-toggle="modal" data-bs-target="#contact-me-form" title="Send a feedback!">
                                 &#128172;
                             </button>
 
                         </li>
+                        {%endif%}
                         <li class="nav-item user-select-none">
                             <a class="nav-link" href="#">&#127482;&#127462;</a>
                         </li>

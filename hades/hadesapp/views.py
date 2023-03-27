@@ -14,6 +14,7 @@ from django.conf import settings
 from pathlib import Path
 from .decorators import allowed_users, admin_only, authenticated_user
 from datetime import datetime, date, timedelta
+from django.utils import timezone
 from .filters import UserFilter
 from django.core.paginator import Paginator
 from django.http import JsonResponse
@@ -33,9 +34,6 @@ def main(request):
                                 date_of_release__lte=this_month).annotate(avg_score=Round(Avg('gamerate__score'),
                                                                                           2), ).order_by(
         '-avg_score').all()[:3]
-    print(this_month)
-    print(last_month)
-    print(games)
     context = {'title': 'UGF | Home', 'games': games}
     return render(request, 'hadesapp/main.html', context)
 
@@ -306,6 +304,7 @@ def delete_rate(request, slug):
 
 @allowed_users(allowed_roles=['admins', 'custom_users', 'newbies'])
 def user_profile(request, pk):
+    new_appeals = Appeal.objects.filter(checked_at=None).count()
     profile = CustomUser.objects.get(username=pk)
     main_user = True
     if profile.username != request.user.username:
@@ -321,7 +320,8 @@ def user_profile(request, pk):
         'date_of_birth': profile.date_of_birth, 'about_me': profile.about_me,
         'gender': profile.gender, 'date_of_registration': date_of_registration,
         'today': today, 'days_on_site': days_on_site.days,
-        'main_user': main_user, 'profile': profile, 'profile_pic': profile_pic
+        'main_user': main_user, 'profile': profile, 'profile_pic': profile_pic,
+        'new_appeals': new_appeals
     }
     return render(request, 'hadesapp/user_profile.html', context)
 
@@ -409,7 +409,36 @@ def contact_us(request):
             message = request.POST['message']
             print(f'this is message -- {message}')
             appeal_form.save()
-            return JsonResponse({'success': 'true' }, safe=False)
+            return JsonResponse({'success': 'true'}, safe=False)
     response = JsonResponse({'error': appeal_form.errors})
     response.status_code = 400
     return response
+
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admins', 'custom_users'])
+def appeals(request):
+    appeals = Appeal.objects.order_by('-created_at')  # todo Sort by desc
+    p = Paginator(appeals, 6)
+    page = request.GET.get('page')
+    appeals_pages = p.get_page(page)
+    context = {'appeals': appeals, 'title': 'UGF | Appeals', 'pages': appeals_pages}
+    return render(request, 'hadesapp/appeals.html', context)
+
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admins', 'custom_users'])
+def check_appeal(request, pk):
+    if request.method == "POST":
+        action = request.POST.get('checking')
+        if action == 'check_it':
+            appeal = Appeal.objects.filter(id=pk).first()
+            print(pk)
+            print(appeal)
+            appeal.checked_at = timezone.now()
+            appeal.checked_by_id = request.user.id
+            print(appeal.checked_at, appeal.checked_by_id)
+            appeal.save()
+            print('WHAT THE ACTUAL FUCK?!')
+            return JsonResponse({'success': 'true', }, safe=False)
+        return redirect('appeals')
