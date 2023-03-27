@@ -1,7 +1,8 @@
+{%load static%}
 <header>
     <nav class="navbar navbar-expand-lg" style="background-color: #7c81ff;">
         <div class="container-lg">
-            <a class="navbar-brand" href="{%url 'main'%}"><b>UFG</b></a>
+            <a class="navbar-brand" href="{%url 'main'%}">&#128251; <b>UGF</b></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -35,8 +36,9 @@
                     <ul class="navbar-nav">
                         {%if '/user_profile' in request.path and request.user.is_staff %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{%url 'appeals'%}" title="There's {{new_appeals}} new appeals!">&#128126; <span
-                                    class="badge rounded-pill text-bg-warning">{{new_appeals}}</span></a>
+                            <a class="nav-link" href="{%url 'appeals'%}" title="There's {{new_appeals}} new appeals!">&#128126;
+                                <span
+                                        class="badge rounded-pill text-bg-warning">{{new_appeals}}</span></a>
                         </li>
                         {%else%}
                         <li class="nav-item">

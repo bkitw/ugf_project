@@ -401,13 +401,9 @@ def contact_us(request):
     if request.method == 'POST':
         appeal_form = AppealForm(request.POST)
         if appeal_form.is_valid():
-            print('form is valid')
             email = request.POST['email']
-            print(f'this is email -- {email}')
             theme = request.POST['theme']
-            print(f'this is theme --{theme}')
             message = request.POST['message']
-            print(f'this is message -- {message}')
             appeal_form.save()
             return JsonResponse({'success': 'true'}, safe=False)
     response = JsonResponse({'error': appeal_form.errors})
@@ -433,12 +429,8 @@ def check_appeal(request, pk):
         action = request.POST.get('checking')
         if action == 'check_it':
             appeal = Appeal.objects.filter(id=pk).first()
-            print(pk)
-            print(appeal)
             appeal.checked_at = timezone.now()
             appeal.checked_by_id = request.user.id
-            print(appeal.checked_at, appeal.checked_by_id)
             appeal.save()
-            print('WHAT THE ACTUAL FUCK?!')
             return JsonResponse({'success': 'true', }, safe=False)
         return redirect('appeals')

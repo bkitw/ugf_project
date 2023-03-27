@@ -1,11 +1,11 @@
 <!--main block!-->
 
 <section id="main_game_info_section">
-    <div class="container" style="border:solid; border-size:1px">
-        <div class="row" style="border:solid; border-size:1px">
-            <div class="col" style="border:solid; border-size:1px">
-                <div class="row align-items-center" style="border:solid; border-size:1px">
-                    <div class="col-4 m-3" style="border:solid; border-size:1px">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="row align-items-center">
+                    <div class="col-4 m-3 border border-success p-2 mb-2 border-opacity-25 rounded">
                         <ul class="list-group list-group-flush">
                             {% for game in games%}
                             <li class="list-group-item">
@@ -18,8 +18,8 @@
                             {%endfor%}
                         </ul>
                     </div>
-                    <div class="col-6 m-3" style="border:solid; border-size:1px">
-                        <div class="card" style="width: 18rem;">
+                    <div class="col-6 m-3 border border-success p-2 mb-2 border-opacity-25 rounded">
+                        <div class="card m-3" style="width: 18rem;">
                             <div class="card-body">
                                 <h5 class="card-title">Card title</h5>
                                 <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>

@@ -17,7 +17,6 @@
                     <hr>
                 </div>
                 <form id="check_form" action="{%url 'check_appeal' appeal.id%}" method="post">
-                    <h3>{{appeal.id}}</h3>
                     {%csrf_token%}
                     {%if appeals%}
                     {%if not appeal.checked_at%}
