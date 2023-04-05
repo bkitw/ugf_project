@@ -1,0 +1,57 @@
+{%extends 'hadesapp/base.html'%}
+{%load static%}
+{%block content%}
+
+<section class="m-3">
+    <div class="col-6 mx-auto m-2 rounded p-3 border border-success p-2 mb-2 border-opacity-25">
+        <form action="" method="post" enctype="multipart/form-data">
+            <fieldset>
+                {%csrf_token%}
+                {%if editor.name.errors%}
+                <div class="article-warning-div alert alert-warning">&#128406; Don't you think that article need a
+                    title?
+                </div>
+                {%endif%}
+                <div>{{editor.name}}</div>
+                {%if editor.snippet.errors%}
+                <div class="article-warning-div alert alert-warning">&#128406; Please, enter the short synopsis of your
+                    article.
+                </div>
+                {%endif%}
+                <div>{{editor.snippet}}</div>
+                {%if editor.cover_picture.errors%}
+                <div class="article-warning-div alert alert-warning">&#128406; Something wrong with that picture!
+                </div>
+                {%endif%}
+                <div>{{editor.cover_picture}}</div>
+                {%if editor.content.errors%}
+                <div class="article-warning-div alert alert-warning">&#129320; Article without content, what?</div>
+                {%endif%}
+                <div class="m-2">{{editor.content}}</div>
+                <div class="m-2">{{editor.game}}</div>
+                <div class="text-end">
+                    <button type="submit" class="btn btn-success m-2">POST!</button>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</section>
+
+
+{%endblock%}
+{%block add_js%}
+
+<script>
+$( document ).ready(function() {
+  // Catch the image being removed.
+  // let editor = $("#id_content")[0]['data-froala.editor'];
+
+  $('select#id_game').addClass('form-select');
+
+  });
+
+
+
+</script>
+
+{%endblock%}

@@ -29,12 +29,15 @@ from django.db.models.functions import Round
 @login_required(login_url='login')
 def main(request):
     this_month = datetime.now().date()
-    last_month = (this_month - timedelta(weeks=4)).replace(day=datetime.now().today().day)
+    last_month = (this_month - timedelta(days=30))
     games = Game.objects.filter(date_of_release__gte=last_month,
                                 date_of_release__lte=this_month).annotate(avg_score=Round(Avg('gamerate__score'),
                                                                                           2), ).order_by(
         '-avg_score').all()[:3]
-    context = {'title': 'UGF | Home', 'games': games}
+    articles = Article.objects.all()
+    for article in articles:
+        print(article.created_at.strftime('%H:%M, %d-%m-%Y'))
+    context = {'title': 'UGF | Home', 'games': games, 'articles': articles}
     return render(request, 'hadesapp/main.html', context)
 
 
@@ -401,13 +404,9 @@ def contact_us(request):
     if request.method == 'POST':
         appeal_form = AppealForm(request.POST)
         if appeal_form.is_valid():
-            print('form is valid')
             email = request.POST['email']
-            print(f'this is email -- {email}')
             theme = request.POST['theme']
-            print(f'this is theme --{theme}')
             message = request.POST['message']
-            print(f'this is message -- {message}')
             appeal_form.save()
             return JsonResponse({'success': 'true'}, safe=False)
     response = JsonResponse({'error': appeal_form.errors})
@@ -442,3 +441,29 @@ def check_appeal(request, pk):
             print('WHAT THE ACTUAL FUCK?!')
             return JsonResponse({'success': 'true', }, safe=False)
         return redirect('appeals')
+
+
+@login_required(login_url='login')
+def article_page(request, slug):
+    article = Article.objects.filter(slug=slug).first()
+    context = {
+        'article': article, 'title': article.name
+    }
+    return render(request, 'hadesapp/article_page.html', context)
+
+
+@login_required(login_url='login')
+def create_article(request):
+    editor = ArticleForm()
+    if request.method == 'POST':
+        editor = ArticleForm(request.POST, request.FILES)
+        if editor.is_valid():
+            precommitted_editor = editor.save(commit=False)
+            precommitted_editor.user_id = request.user.id
+            precommitted_editor.save()
+            return redirect('main')
+    context = {
+        'editor': editor, 'title': "UGF | Article Creation",
+    }
+    return render(request, 'hadesapp/create_article.html', context)
+

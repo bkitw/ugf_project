@@ -1,11 +1,28 @@
+{%load static%}
+{%load time_format%}
 <!--main block!-->
+<style>
+    .img-width{
+    width:250px;
+    }
 
+        .avatar {
+  vertical-align: middle;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+
+
+
+</style>
 <section id="main_game_info_section">
-    <div class="container" style="border:solid; border-size:1px">
-        <div class="row" style="border:solid; border-size:1px">
-            <div class="col" style="border:solid; border-size:1px">
-                <div class="row align-items-center" style="border:solid; border-size:1px">
-                    <div class="col-4 m-3" style="border:solid; border-size:1px">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="row grid">
+                    <div class="col-4 border rounded border-success p-2 m-4 border-opacity-25 d-flex flex-column mb-3">
                         <ul class="list-group list-group-flush">
                             {% for game in games%}
                             <li class="list-group-item">
@@ -13,25 +30,47 @@
                                     <span style="color:black">{{game.name}}</span></a>
                                     --
                                     <span style="color:grey">✪ {{game.avg_score}}</span></b></h6>
-                            <hr></li>
-
-                            {%endfor%}
+                                <hr>
+                                {%endfor%}
                         </ul>
                     </div>
-                    <div class="col-6 m-3" style="border:solid; border-size:1px">
-                        <div class="card" style="width: 18rem;">
+                    <div class="col-6 mx-auto m-2 rounded border border-success mb-2 border-opacity-25">
+                        {%for article in articles%}
+                        <div class="card mb-4 mt-4 " style="width: 100%">
                             <div class="card-body">
-                                <h5 class="card-title">Card title</h5>
-                                <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-                                <p class="card-text">Some quick example text to build on the card title and make up the
-                                    bulk of the card's content.</p>
-                                <a href="#" class="card-link">Card link</a>
-                                <a href="#" class="card-link">Another link</a>
+                                <div class="row"><h5 class="card-title"><strong>{{article|title}}</strong></h5></div>
+                                <div class="row d-flex"><p><a class="nav-link"
+                                                              href="{%url 'user_profile' article.user.username%}"><img
+                                        src="{%static 'media'%}/{{article.user.profile_pic}}" alt="userpic"
+                                        class="avatar avatar-sm me-3 border-radius-lg"><b>{{article.user.username}}</b></a>
+                                    | <i>{{article.created_at|format_datetime}}</i></p>
+                                </div>
+
+                                <a href="{%url 'article_page' article.slug%}" class="card-link text-decoration-none"
+                                   style="color:black">{{article.snippet}}</a>
+                                <hr>
+                                <a href="{%url 'article_page' article.slug%}" class="card-link text-decoration-none">
+                                    <img src="{%static 'media'%}/{{article.cover_picture}}" alt="cover.png"
+                                         width="100%"></a>
                             </div>
                         </div>
+                        {%endfor%}
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+
+$( document ).ready(function() {
+    console.log( "ready!" );
+    console.log($("img.fr-fic").width(490).height(370))
+});
+
+
+
+
+
+</script>

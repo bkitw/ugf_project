@@ -41,3 +41,5 @@ admin.site.register(GameAttachment)
 admin.site.register(GameTrailer)
 admin.site.register(GameRate)
 admin.site.register(Appeal)
+admin.site.register(Article)
+

@@ -15,6 +15,7 @@ python-dotenv = "^0.21.1"
 django-autoslug = "^1.9.8"
 pillow = "^9.4.0"
 django-filter = "^22.1"
+django-froala-editor = "^4.0.18"
 
 
 [build-system]

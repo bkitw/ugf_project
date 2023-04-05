@@ -68,6 +68,17 @@ files = [
 Django = ">=3.2"
 
 [[package]]
+name = "django-froala-editor"
+version = "4.0.18"
+description = "django-froala-editor package helps integrate Froala WYSIWYG HTML editor with Django."
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "django-froala-editor-4.0.18.tar.gz", hash = "sha256:2d27e409b1c398ef075aef254a5e215535fe5cb815177673a8f2e2b2b54b15d7"},
+]
+
+[[package]]
 name = "jinja2"
 version = "3.1.2"
 description = "A very fast and expressive template engine."
@@ -301,4 +312,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "e193c8698f5469002daf0fd3f4aa27c4b91b79fa9abf28fd706cc9799be72648"
+content-hash = "ca056fd7bb342495e14476eab19c66d738b760c0ccb616455115d75a0c121a8d"

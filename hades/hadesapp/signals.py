@@ -22,6 +22,7 @@ def klass_pre_save(sender, instance, *args, **kwargs):
 pre_save.connect(klass_pre_save, sender=Developer)
 pre_save.connect(klass_pre_save, sender=Game)
 pre_save.connect(klass_pre_save, sender=Genre)
+pre_save.connect(klass_pre_save, sender=Article)
 
 
 def klass_post_save(sender, instance, created, *args, **kwargs):
@@ -32,3 +33,4 @@ def klass_post_save(sender, instance, created, *args, **kwargs):
 post_save.connect(klass_post_save, sender=Developer)
 post_save.connect(klass_post_save, sender=Game)
 post_save.connect(klass_post_save, sender=Genre)
+post_save.connect(klass_post_save, sender=Article)

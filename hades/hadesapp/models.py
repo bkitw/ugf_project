@@ -3,6 +3,28 @@ from .utils import slugify_instance_name
 from django.db.models.signals import pre_save, post_save
 from django.contrib.auth.models import User, AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
+from froala_editor.fields import FroalaField
+
+
+def article_cover_path(instance, filename):
+    # file will be uploaded to MEDIA_ROOT/file_<name>/<filename>
+    return 'images/article_cover_{0}/{1}'.format(instance.slug, filename)
+
+
+class Article(models.Model):
+    name = models.CharField(max_length=255, null=False)
+    slug = models.SlugField(blank=True, null=True, unique=True)
+    snippet = models.CharField(max_length=255, null=False)
+    content = FroalaField()
+    game = models.ManyToManyField("Game", related_name='article_about_game', symmetrical=False,
+                                  blank=True)
+    user = models.ForeignKey('CustomUser', null=True, blank=True, on_delete=models.CASCADE)
+    cover_picture = models.ImageField(null=True, blank=True, upload_to=article_cover_path)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
 
 
 def game_directory_path(instance, filename):
