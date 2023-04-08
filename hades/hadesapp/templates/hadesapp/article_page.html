@@ -6,7 +6,7 @@
 
 <section class="col-10 m-4">
 
-    <div class="col-10 mx-auto rounded border border-success border-opacity-25 article">
+    <div class="col-10 mx-auto article">
         <div class="card m-2 ">
             <div class="card-body">
                 <div class="row"><h5 class="card-title"><strong>{{article|title}}</strong></h5></div>
@@ -19,18 +19,62 @@
                 </div>
                 <hr>
                 <p>{{article.content|safe}}</p>
+
+                <div class="card-footer bg-transparent border-info row">
+                    <div class="col-3">
+                        <button class="rate-button" role="button" data-article-id="{{article.id}}" title="Rate this up!"
+                                id="ups"><h4>&#10169;</h4>
+                            <span class="badge text-bg-secondary">{{ups}}</span>
+                        </button>
+                        <span> | </span>
+                        <button class="rate-button" role="button" data-article-id="{{article.id}}"
+                                title="Rate this down!"
+                                id="downs"><h4>&#10167;</h4>
+                            <span class="badge text-bg-secondary">{{downs}}</span>
+                        </button>
+                    </div>
+                    <div class="related-games col-6">
+                        <ul class="list-inline">
+                            {%for game in related_games%}
+                            <li class="list-inline-item"><a href="{%url 'game_page' game.slug%}">{{game.name}};</a></li>
+                            {%endfor%}
+                        </ul>
+                    </div>
+                    <div class="col-3">
+                        <a class="btn btn-warning float-end" href="{%url 'update_article' article.slug%}"
+                           role="button">Edit</a>
+                    </div>
+                </div>
             </div>
-            <div class="card-footer bg-transparent border-info">
-                <button class="rate-button" role="button" data-article-id="{{article.id}}" title="Rate this up!"
-                        id="ups"><h4>&#10169;</h4>
-                    <span class="badge text-bg-secondary">{{ups}}</span>
-                </button>
-                <span> | </span>
-                <button class="rate-button" role="button" data-article-id="{{article.id}}" title="Rate this down!"
-                        id="downs"><h4>&#10167;</h4>
-                    <span class="badge text-bg-secondary">{{downs}}</span>
-                </button>
-                <a class="btn btn-warning float-end" href="{%url 'update_article' article.slug%}" role="button">Edit</a>
+            <div class="comments-section">
+                <h5 class="m-3">Comments:</h5>
+                <div class="commentary-editor p-4">
+                    {%csrf_token%}
+                    <div style="display:none" class="alert alert-info warning">You can't send empty commentary.</div>
+                    <textarea class="form-control comment-area"></textarea>
+                    <button class="float-end mt-2 mb-2 send-comment btn btn-info" role='button'
+                            data-article-id="{{article.id}}"
+                            id="send_comment">Comment!
+                    </button>
+                </div>
+                <div class="comments" id="comments">
+                    {%for comment in related_comments%}
+                    <div class="card m-5">
+                        <div class="card-header">
+                            <div class="toast-header">
+                                <strong class="me-auto"><a class="nav-link"
+                                                           href="{%url 'user_profile' comment.user.username%}"><img
+                                        src="{%static 'media'%}/{{comment.user.profile_pic}}" alt="userpic"
+                                        class="avatar avatar-sm me-3 border-radius-lg"><b>{{comment.user.username}}</b></a></strong>
+                                <small class="text-body-secondary"><i>{{comment.created_at|format_datetime}}</i></small>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <h6>{{comment.content}}</h6>
+                        </div>
+                    </div>
+                    {%endfor%}
+                </div>
             </div>
         </div>
     </div>
@@ -72,7 +116,35 @@
             }
             });
         });
-    });
+    $('button#send_comment').on('click', function(e){
+        let sendButton = $(this);
+        let data = {
+            'article_id': sendButton.attr('data-article-id'),
+            'comment': $('textarea.comment-area').val(),
+            'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val(),
+        }
+
+        $.ajax({
+            type: 'POST',
+            data: data,
+            url: '/add_comment',
+            success: function (result){
+            // $('#comments').replaceWith('<div class="comments" id="comments">{%for comment in related_comments%}<div class="card m-5"><div class="card-header"><div class="toast-header"><strong class="me-auto"><a class="nav-link"href="{%url 'user_profile' comment.user.username%}"><img src="{%static 'media'%}/{{comment.user.profile_pic}}" alt="userpic" class="avatar avatar-sm me-3 border-radius-lg"><b>{{comment.user.username}}</b></a></strong><small class="text-body-secondary"><i>{{comment.created_at|format_datetime}}</i></small></div></div><div class="card-body"><h6>{{comment.content}}</h6></div></div>{%endfor%}</div>')
+                $('#comments').load(' #comments');
+                $('.warning').hide();
+                $('textarea.comment-area').val("");
+            },
+            error: function (result){
+                $('.warning').show();
+            }
+        })
+    })
+})
+
+
+
+
+
 
 </script>
 

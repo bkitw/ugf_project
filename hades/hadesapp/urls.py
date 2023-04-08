@@ -30,6 +30,7 @@ urlpatterns = [
     path('create_article', views.create_article, name='create_article'),
     path('update_article/<slug:slug>', views.update_article, name='update_article'),
     path('article_rate', views.article_rate, name='article_rate'),
+    path('add_comment', views.add_comment, name='add_comment'),
 
 
 ]
