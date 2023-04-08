@@ -17,6 +17,7 @@ pillow = "^9.4.0"
 django-filter = "^22.1"
 django-froala-editor = "^4.0.18"
 pytz = "^2023.3"
+django-postgres-extra = "^2.0.8"
 
 
 [build-system]

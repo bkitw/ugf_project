@@ -5,6 +5,7 @@ from django.contrib.auth.models import User, AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from froala_editor.fields import FroalaField
+from psqlextra.indexes import UniqueIndex
 
 
 def article_cover_path(instance, filename):
@@ -13,6 +14,10 @@ def article_cover_path(instance, filename):
 
 
 class ArticleRate(models.Model):
+    class Meta:
+        indexes = [
+            UniqueIndex(fields=['user', 'article']),
+        ]
     user = models.ForeignKey('CustomUser', null=True, blank=True, on_delete=models.CASCADE)
     rating_type = models.BooleanField(null=True, blank=True)
     article = models.ForeignKey('Article', null=True, blank=True, on_delete=models.CASCADE)
@@ -24,7 +29,7 @@ class Article(models.Model):
     slug = models.SlugField(blank=True, null=True, unique=True)
     snippet = models.CharField(max_length=255, null=False)
     content = FroalaField()
-    game = models.ManyToManyField("Game", related_name='article_about_game', symmetrical=False,
+    games = models.ManyToManyField("Game", related_name='articles',
                                   blank=True)
     user = models.ForeignKey('CustomUser', null=True, blank=True, on_delete=models.CASCADE)
     cover_picture = models.ImageField(null=True, blank=True, upload_to=article_cover_path)

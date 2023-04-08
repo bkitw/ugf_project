@@ -124,7 +124,7 @@ class ArticleForm(ModelForm):
                                   attrs={'class': 'form-control m-2 ', 'placeholder': 'short about',
                                          'title': 'This field is required, too.'}))
     content = forms.CharField(widget=FroalaEditor(attrs={'class': 'm-2', 'title': 'This field is also required.'}))
-    game = forms.SelectMultiple(attrs={'class': 'form-select', 'aria-label': 'multiple select'})
+    games = forms.ModelMultipleChoiceField(required=False, queryset=Game.objects.all(), )
     cover_picture = forms.ImageField(required=False)
 
 
@@ -140,6 +140,6 @@ class ArticleForm(ModelForm):
     class Meta:
         model = Article
         fields = [
-            'name', 'snippet', 'content', 'game',
+            'name', 'snippet', 'content', 'games',
             'cover_picture'
         ]

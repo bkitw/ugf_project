@@ -22,6 +22,7 @@ from .utils import profile_pic as avatar
 from django.db.models import Sum, Max, Avg
 from decimal import *
 from django.db.models.functions import Round
+from django.db.utils import IntegrityError
 
 
 # Create your views here.
@@ -277,11 +278,12 @@ def game_page(request, slug):
     for key, percent in scores_by.items():
         if sum_of_scores['all_scores'] is not None:
             percent_of.update({key: round(percent / (voters / 100), 2)})
+    articles = game.articles.all()
     context = {
         'title': f'UGF | {game.name}', 'game': game, 'img_path': image.game_image,
         'trailers': trailers, 'scores_by': scores_by, 'already_voted': already_voted,
         'user_score': user_score, 'average_score': average_score, 'time': time, 'percent_of': percent_of,
-        'is_released': is_released, 'genres': genres_of_game, 'developer': developer
+        'is_released': is_released, 'genres': genres_of_game, 'developer': developer, 'articles': articles
 
     }
     return render(request, 'hadesapp/game_page.html', context)
@@ -447,7 +449,7 @@ def article_page(request, slug):
     article_rate_down = ArticleRate.objects.filter(article_id=article.id, rating_type=False).count()
     context = {
         'article': article, 'title': article.name, 'ups': article_rate_up,
-        'downs' : article_rate_down,
+        'downs': article_rate_down,
     }
     return render(request, 'hadesapp/article_page.html', context)
 
@@ -461,11 +463,13 @@ def create_article(request):
             precommitted_editor = editor.save(commit=False)
             precommitted_editor.user_id = request.user.id
             precommitted_editor.save()
+            editor.save_m2m()
             return redirect('main')
     context = {
         'editor': editor, 'title': "UGF | Article Creation",
     }
     return render(request, 'hadesapp/create_article.html', context)
+
 
 @login_required(login_url='login')
 def update_article(request, slug):
@@ -477,11 +481,41 @@ def update_article(request, slug):
             precommitted_editor = editor.save(commit=False)
             precommitted_editor.user_id = request.user.id
             precommitted_editor.save()
+            editor.save_m2m()
             return redirect('article_page', article.slug)
     context = {
         'editor': editor, 'title': "UGF | Article Edit",
     }
     return render(request, 'hadesapp/update_article.html', context)
 
-def article_rate(request, slug):
-    pass
+
+def article_rate(request):
+    check_type = 1
+
+    if int(request.POST.get('type')) == 1:
+        check_type = 0
+    check_rate = ArticleRate.objects.filter(rating_type=check_type, article_id=request.POST.get('article_id'),
+                                            user=request.user).first()
+
+    if check_rate:
+        check_rate.rating_type = int(request.POST.get('type'))
+        check_rate.save()
+        article_rate_up = ArticleRate.objects.filter(article_id=request.POST.get('article_id'),
+                                                     rating_type=True).count()
+        article_rate_down = ArticleRate.objects.filter(article_id=request.POST.get('article_id'),
+                                                       rating_type=False).count()
+        return JsonResponse(
+            {'success': 'true', 'article_rate_up': article_rate_up, 'article_rate_down': article_rate_down},
+            safe=False)
+    rate = ArticleRate(rating_type=request.POST.get('type'),
+                       article_id=request.POST.get('article_id'), user=request.user)
+    try:
+        status = rate.save()
+    except IntegrityError:
+        response = JsonResponse({'error': 'Already rated!'})
+        response.status_code = 400
+        return response
+    article_rate_up = ArticleRate.objects.filter(article_id=request.POST.get('article_id'), rating_type=True).count()
+    article_rate_down = ArticleRate.objects.filter(article_id=request.POST.get('article_id'), rating_type=False).count()
+    return JsonResponse({'success': 'true', 'article_rate_up': article_rate_up, 'article_rate_down': article_rate_down},
+                        safe=False)
