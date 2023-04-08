@@ -1,18 +1,52 @@
 {%extends 'hadesapp/base.html'%}
 {%load static%}
+{%load time_format%}
 {%block content%}
 
-<section class="m-3">
-     <div class="col-6 mx-auto m-2 rounded p-3 border border-success p-2 mb-2 border-opacity-25">
-                        <div class="card m-2 " style="width: 100%">
-                            <div class="card-body">
-                                <h5 class="card-title">{{article|title}}</h5>
-                                <p>{{article.content|safe}}</p>
-                            </div>
-                        </div>
-                    </div>
+
+<section class="col-10 m-4">
+    <div class="col-10 mx-auto rounded border border-success border-opacity-25 article">
+        <div class="card m-2 ">
+            <div class="card-body">
+                <div class="row"><h5 class="card-title"><strong>{{article|title}}</strong></h5></div>
+                <hr>
+                <div class="toast-header">
+                    <strong class="me-auto"><a class="nav-link" href="{%url 'user_profile' article.user.username%}"><img
+                            src="{%static 'media'%}/{{article.user.profile_pic}}" alt="userpic"
+                            class="avatar avatar-sm me-3 border-radius-lg"><b>{{article.user.username}}</b></a></strong>
+                    <small class="text-body-secondary"><i>{{article.created_at|format_datetime}}</i></small>
+                </div>
+                <hr>
+                <p>{{article.content|safe}}</p>
+            </div>
+            <div class="card-footer bg-transparent border-info">
+                <button class="rate-button" name="rate_up" title="Rate this up!"><h4>&#10169;</h4>
+                <span class="badge text-bg-secondary" id="ups">{{ups}}</span>
+                </button>
+                <span> | </span>
+                <button class="rate-button" name="rate_down" title="Rate this down!"><h4>&#10167;</h4>
+                    <span class="badge text-bg-secondary" id="downs">{{downs}}</span>
+                </button>
+                <a class="btn btn-warning float-end" href="{%url 'update_article' article.slug%}" role="button">Edit</a>
+            </div>
+        </div>
+    </div>
 </section>
 
 {%endblock%}
+
 {%block add_js%}
+
+<script>
+
+    $( document ).ready(function() {
+    console.log( "ready!" );
+
+    $("button[name='rate_up']").on("click", function(e){
+        e.preventDefault();
+        let laButton = $(this);
+        });
+    });
+</script>
+
 {%endblock%}

@@ -1,5 +1,6 @@
 {%load static%}
 {%load time_format%}
+{% load pagination_tags %}
 <!--main block!-->
 <style>
     .img-width{
@@ -16,6 +17,9 @@
 
 
 
+
+
+
 </style>
 <section id="main_game_info_section">
     <div class="container">
@@ -23,18 +27,31 @@
             <div class="col">
                 <div class="row grid">
                     <div class="col-4 border rounded border-success p-2 m-4 border-opacity-25 d-flex flex-column mb-3">
-                        <ul class="list-group list-group-flush">
-                            {% for game in games%}
-                            <li class="list-group-item">
-                                <h6><b><a href="{%url 'game_page' game.slug%}" style="text-decoration:none;">
-                                    <span style="color:black">{{game.name}}</span></a>
-                                    --
-                                    <span style="color:grey">✪ {{game.avg_score}}</span></b></h6>
-                                <hr>
-                                {%endfor%}
-                        </ul>
+                        <div class="games-of-month">
+                            <ul class="list-group list-group-flush">
+                                {% for game in games%}
+                                <li class="list-group-item">
+                                    <h6><b><a href="{%url 'game_page' game.slug%}" style="text-decoration:none;">
+                                        <span style="color:black">{{game.name}}</span></a>
+                                        --
+                                        <span style="color:grey">✪ {{game.avg_score}}</span></b></h6>
+                                    <hr>
+                                    {%endfor%}
+                            </ul>
+                        </div>
+                        <div class="another-block" style="margin:inherit;">
+                            <div class="card text-center mb-3" style="width: 18rem;">
+                                <div class="card-body">
+                                    <h5 class="card-title">Special title treatment</h5>
+                                    <p class="card-text">With supporting text below as a natural lead-in to additional
+                                        content.</p>
+                                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
-                    <div class="col-6 mx-auto m-2 rounded border border-success mb-2 border-opacity-25">
+                    <div class="col-7" style="width=100%">
                         {%for article in articles%}
                         <div class="card mb-4 mt-4 " style="width: 100%">
                             <div class="card-body">
@@ -55,6 +72,53 @@
                             </div>
                         </div>
                         {%endfor%}
+                        {% if articles.has_previous and articles.has_next%}
+                        <nav class="m-4" aria-label="Page navigation">
+                            <ul class="pagination justify-content-center nav nav-pills">
+                                {% if articles.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?{% url_replace request 'page' 1%}">
+                                        <strong><<</strong>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="?{% url_replace request 'page' pages.previous_page_number%}">
+                                        <strong><</strong>
+                                    </a>
+                                </li>
+                                {% else %}
+                                <li class="page-item disabled" hidden>
+                                    <a class="page-link">Previous</a>
+                                </li>
+                                {% endif %}
+
+                                {% for number in articles.paginator.page_range %}
+                                <li class="page-item {%if pages.number == number %} active {%endif%}">
+                                    <a class="page-link" href="?{% url_replace request 'page' number%}">
+                                        {{number}}
+                                    </a>
+                                </li>
+                                {% endfor %}
+                                {% if articles.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="?{% url_replace request 'page' pages.next_page_number%}"><strong>></strong>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="?{% url_replace request 'page' pages.paginator.num_pages%}"><strong>>></strong></a>
+                                </li>
+                                {% else %}
+                                <li class="page-item disabled" hidden>
+                                    <a class="page-link" href="#"><strong>></strong></a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                        {%else%}
+                        {%endif%}
                     </div>
                 </div>
             </div>
@@ -68,6 +132,9 @@ $( document ).ready(function() {
     console.log( "ready!" );
     console.log($("img.fr-fic").width(490).height(370))
 });
+
+
+
 
 
 

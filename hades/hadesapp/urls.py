@@ -28,6 +28,7 @@ urlpatterns = [
     path('delete_genre/<slug:slug>', views.delete_genre, name='delete_genre'),
     path('article/<slug:slug>', views.article_page, name='article_page'),
     path('create_article', views.create_article, name='create_article'),
+    path('update_article/<slug:slug>', views.update_article, name='update_article'),
 
 
 ]

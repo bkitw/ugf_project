@@ -117,11 +117,13 @@ class AppealForm(ModelForm):
 
 class ArticleForm(ModelForm):
     name = forms.CharField(label='Title', required=True,
-                           widget=forms.TextInput(attrs={'class': 'form-control m-2', 'placeholder': 'Title'}))
+                           widget=forms.TextInput(attrs={'class': 'form-control m-2', 'placeholder': 'title of post',
+                                                         'title': 'This field is required.'}))
     snippet = forms.CharField(label='Snippet', required=True,
                               widget=forms.TextInput(
-                                  attrs={'class': 'form-control m-2 ', 'placeholder': 'Short about'}))
-    content = forms.CharField(widget=FroalaEditor(attrs={'class': 'm-2'}))
+                                  attrs={'class': 'form-control m-2 ', 'placeholder': 'short about',
+                                         'title': 'This field is required, too.'}))
+    content = forms.CharField(widget=FroalaEditor(attrs={'class': 'm-2', 'title': 'This field is also required.'}))
     game = forms.SelectMultiple(attrs={'class': 'form-select', 'aria-label': 'multiple select'})
     cover_picture = forms.ImageField(required=False)
 

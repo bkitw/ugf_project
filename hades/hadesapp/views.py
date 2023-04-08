@@ -34,10 +34,11 @@ def main(request):
                                 date_of_release__lte=this_month).annotate(avg_score=Round(Avg('gamerate__score'),
                                                                                           2), ).order_by(
         '-avg_score').all()[:3]
-    articles = Article.objects.all()
-    for article in articles:
-        print(article.created_at.strftime('%H:%M, %d-%m-%Y'))
-    context = {'title': 'UGF | Home', 'games': games, 'articles': articles}
+    articles = Article.objects.order_by('-created_at')
+    p = Paginator(articles, 20)
+    page = request.GET.get('page')
+    articles_pages = p.get_page(page)
+    context = {'title': 'UGF | Home', 'games': games, 'articles': articles_pages}
     return render(request, 'hadesapp/main.html', context)
 
 
@@ -417,7 +418,7 @@ def contact_us(request):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admins', 'custom_users'])
 def appeals(request):
-    appeals = Appeal.objects.order_by('-created_at')  # todo Sort by desc
+    appeals = Appeal.objects.order_by('-created_at')
     p = Paginator(appeals, 6)
     page = request.GET.get('page')
     appeals_pages = p.get_page(page)
@@ -432,13 +433,9 @@ def check_appeal(request, pk):
         action = request.POST.get('checking')
         if action == 'check_it':
             appeal = Appeal.objects.filter(id=pk).first()
-            print(pk)
-            print(appeal)
             appeal.checked_at = timezone.now()
             appeal.checked_by_id = request.user.id
-            print(appeal.checked_at, appeal.checked_by_id)
             appeal.save()
-            print('WHAT THE ACTUAL FUCK?!')
             return JsonResponse({'success': 'true', }, safe=False)
         return redirect('appeals')
 
@@ -446,8 +443,11 @@ def check_appeal(request, pk):
 @login_required(login_url='login')
 def article_page(request, slug):
     article = Article.objects.filter(slug=slug).first()
+    article_rate_up = ArticleRate.objects.filter(article_id=article.id, rating_type=True).count()
+    article_rate_down = ArticleRate.objects.filter(article_id=article.id, rating_type=False).count()
     context = {
-        'article': article, 'title': article.name
+        'article': article, 'title': article.name, 'ups': article_rate_up,
+        'downs' : article_rate_down,
     }
     return render(request, 'hadesapp/article_page.html', context)
 
@@ -467,3 +467,21 @@ def create_article(request):
     }
     return render(request, 'hadesapp/create_article.html', context)
 
+@login_required(login_url='login')
+def update_article(request, slug):
+    article = Article.objects.get(slug=slug)
+    editor = ArticleForm(instance=article)
+    if request.method == 'POST':
+        editor = ArticleForm(request.POST, request.FILES, instance=article)
+        if editor.is_valid():
+            precommitted_editor = editor.save(commit=False)
+            precommitted_editor.user_id = request.user.id
+            precommitted_editor.save()
+            return redirect('article_page', article.slug)
+    context = {
+        'editor': editor, 'title': "UGF | Article Edit",
+    }
+    return render(request, 'hadesapp/update_article.html', context)
+
+def article_rate(request, slug):
+    pass
