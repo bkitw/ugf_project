@@ -4,6 +4,7 @@ from django.forms import ModelForm, ModelMultipleChoiceField
 from django.contrib.auth.models import User
 from .models import *
 from django.core.exceptions import ValidationError
+from froala_editor.widgets import FroalaEditor
 
 
 class DeveloperForm(ModelForm):
@@ -112,3 +113,33 @@ class AppealForm(ModelForm):
                             widget=forms.TextInput(attrs={'class': 'form-control', }))
     message = forms.CharField(required=False, max_length=1000,
                               widget=forms.Textarea(attrs={'class': 'form-control', }))
+
+
+class ArticleForm(ModelForm):
+    name = forms.CharField(label='Title', required=True,
+                           widget=forms.TextInput(attrs={'class': 'form-control m-2', 'placeholder': 'title of post',
+                                                         'title': 'This field is required.'}))
+    snippet = forms.CharField(label='Snippet', required=True,
+                              widget=forms.TextInput(
+                                  attrs={'class': 'form-control m-2 ', 'placeholder': 'short about',
+                                         'title': 'This field is required, too.'}))
+    content = forms.CharField(widget=FroalaEditor(attrs={'class': 'm-2', 'title': 'This field is also required.'}))
+    games = forms.ModelMultipleChoiceField(required=False, queryset=Game.objects.all(), )
+    cover_picture = forms.ImageField(required=False)
+
+
+    def clean_cover_picture(self):
+        image = self.cleaned_data.get('cover_picture', False)
+        if image:
+            if image.size > 25 * 1024 * 1024:
+                raise ValidationError("Image file too large ( > 5mb )")
+            return image
+        else:
+            raise ValidationError("Couldn't read uploaded image")
+
+    class Meta:
+        model = Article
+        fields = [
+            'name', 'snippet', 'content', 'games',
+            'cover_picture'
+        ]

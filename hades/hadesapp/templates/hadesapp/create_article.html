@@ -1,0 +1,94 @@
+{%extends 'hadesapp/base.html'%}
+{%load static%}
+{%block content%}
+
+<section class="m-3">
+    <div class="col-6 mx-auto m-2 rounded p-3 border border-success p-2 mb-2 border-opacity-25">
+        <form action="" method="post" enctype="multipart/form-data">
+            <fieldset>
+                <div class="alert alert-light" id="alert_light" style="display:none"><h2>Create your post here:</h2>
+                </div>
+                {%csrf_token%}
+                {%if editor.name.errors%}
+                <div class="article-warning-div alert alert-warning">&#128406; Don't you think that article need a
+                    title?
+                </div>
+                {%endif%}
+                <div>{{editor.name}}</div>
+                {%if editor.snippet.errors%}
+                <div class="article-warning-div alert alert-warning">&#128406; Please, enter the short synopsis of your
+                    article.
+                </div>
+                {%endif%}
+                <div>{{editor.snippet}}</div>
+                <div class="d-grid gap-2 col-6 mx-auto">
+                    <button class="btn btn-outline-info m-2" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#cover_picture" aria-expanded="false" aria-controls="collapseExample">
+                        -> Cover for article required <-
+                    </button>
+                </div>
+                <div class="collapse" id="cover_picture">
+                    <div>
+                        {%if editor.cover_picture.errors%}
+                        <div class="article-warning-div alert alert-warning">&#128406; Something wrong with that
+                            picture!
+                        </div>
+                        {%endif%}
+                        <div>{{editor.cover_picture}}</div>
+                    </div>
+                </div>
+
+                {%if editor.content.errors%}
+                <div class="article-warning-div alert alert-warning">&#129320; Article without content, what?</div>
+                {%endif%}
+                <div class="m-2">{{editor.content}}</div>
+                <div class="accordion m-2" id="accordionExample">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                Wanna relate the game to this article?
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                <div class="m-2">{{editor.games}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-end">
+                    <button type="submit" class="btn btn-success m-2">POST!</button>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</section>
+
+
+{%endblock%}
+{%block add_js%}
+
+<script>
+$( document ).ready(function() {
+  // Catch the image being removed.
+  // let editor = $("#id_content")[0]['data-froala.editor'];
+
+  $('select#id_games').addClass('form-select');
+  $('input#id_cover_picture').addClass('form-select m-2');
+  $('div#alert_light').show()
+
+  });
+
+
+
+
+
+
+
+
+
+</script>
+
+{%endblock%}

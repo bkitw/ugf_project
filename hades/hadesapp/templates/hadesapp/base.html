@@ -6,81 +6,84 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Play&display=swap" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="{%static '/css/bootstrap.min.css'%}">
-    <link rel="stylesheet" type="text/css" href="{%static '/css/custom_css.css'%}?var=1.1">
+    <link rel="stylesheet" type="text/css" href="{%static '/css/bootstrap.min.css'%}?var=1.2">
+    <link rel="stylesheet" type="text/css" href="{%static '/css/custom_css.css'%}?var=1.3">
     <title>{{title}}</title>
+    {{ editor.media }}
+
 </head>
 <body>
-    <!--Here goes the header-->
-    {%include 'hadesapp/components/header_navbar.html'%}
-    {%block content%}
-    <!--Here goes main content-->
-    {%endblock%}
-    <!--Here goes footer-->
-    <!--{%include 'hadesapp/components/footer.html'%}-->
-    <!-- Modal Contact Us-->
-    <div class="modal fade" id="contact-me-form" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Please, give us your feedback:</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form id="contact_us_form" action="{%url 'contact_us'%}" method="post">
-                    {%csrf_token%}
-                    <div class="modal-body">
-                        <div class="column m-2 warning-div"></div>
-                        <fieldset>
-                            <div class="mb-3">
-                            <div class="alert alert-warning" role="alert" style="width:96%; display:none" data-field='email'>
+<!--Here goes the header-->
+{%include 'hadesapp/components/header_navbar.html'%}
+{%block content%}
+<!--Here goes main content-->
+{%endblock%}
+<!--Here goes footer-->
+<!--{%include 'hadesapp/components/footer.html'%}-->
+<!-- Modal Contact Us-->
+<div class="modal fade" id="contact-me-form" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Please, give us your feedback:</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="contact_us_form" action="{%url 'contact_us'%}" method="post">
+                {%csrf_token%}
+                <div class="modal-body">
+                    <div class="column m-2 warning-div"></div>
+                    <fieldset>
+                        <div class="mb-3">
+                            <div class="alert alert-warning" role="alert" style="width:96%; display:none"
+                                 data-field='email'>
                                 {%if appeal_form.errors.email%}
                                 {{ appeal_form.errors.email}}
                                 {%endif%}
                             </div>
-                                <label class="form-label"><b>* {{appeal_form.email.label}}:</b></label>
-                                {{appeal_form.email}}
-                            </div>
-                            <div class="mb-3">
-                            <div class="alert alert-warning" role="alert" style="width:96%; display:none" data-field='theme'>
+                            <label class="form-label"><b>* {{appeal_form.email.label}}:</b></label>
+                            {{appeal_form.email}}
+                        </div>
+                        <div class="mb-3">
+                            <div class="alert alert-warning" role="alert" style="width:96%; display:none"
+                                 data-field='theme'>
                                 {%if appeal_form.errors.theme%}
                                 {{ appeal_form.errors.theme}}
                                 {%endif%}
                             </div>
-                                <label class="form-label"><b>* {{appeal_form.theme.label}}:</b></label>
-                                {{appeal_form.theme}}
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label"><b>{{appeal_form.message.label}}</b></label>
-                                {{appeal_form.message}}
-                            </div>
-                        </fieldset>
-                        <p><i>* -- required fields!</i></p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" name="send_appeal" class="btn btn-success">SEND!</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <!--Modal for thanks!-->
-    <div class="modal fade" id="thanks_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-sm modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="thanks_title">THANK YOU FOR YOUR FEEDBACK!</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <p>We really appreciate your opinion!</p>
-            <hr>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <label class="form-label"><b>* {{appeal_form.theme.label}}:</b></label>
+                            {{appeal_form.theme}}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label"><b>{{appeal_form.message.label}}</b></label>
+                            {{appeal_form.message}}
+                        </div>
+                    </fieldset>
+                    <p><i>* -- required fields!</i></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" name="send_appeal" class="btn btn-success">SEND!</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
+<!--Modal for thanks!-->
+<div class="modal fade" id="thanks_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="thanks_title">THANK YOU!</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>We really appreciate your opinion!</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 
@@ -165,6 +168,7 @@ $( document ).ready(function() {
             });
         });
     });
+
 </script>
 
 {%block add_js%}

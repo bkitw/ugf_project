@@ -22,6 +22,7 @@ from .utils import profile_pic as avatar
 from django.db.models import Sum, Max, Avg
 from decimal import *
 from django.db.models.functions import Round
+from django.db.utils import IntegrityError
 
 
 # Create your views here.
@@ -29,12 +30,16 @@ from django.db.models.functions import Round
 @login_required(login_url='login')
 def main(request):
     this_month = datetime.now().date()
-    last_month = (this_month - timedelta(weeks=4)).replace(day=datetime.now().today().day)
+    last_month = (this_month - timedelta(days=30))
     games = Game.objects.filter(date_of_release__gte=last_month,
                                 date_of_release__lte=this_month).annotate(avg_score=Round(Avg('gamerate__score'),
                                                                                           2), ).order_by(
         '-avg_score').all()[:3]
-    context = {'title': 'UGF | Home', 'games': games}
+    articles = Article.objects.order_by('-created_at')
+    p = Paginator(articles, 20)
+    page = request.GET.get('page')
+    articles_pages = p.get_page(page)
+    context = {'title': 'UGF | Home', 'games': games, 'articles': articles_pages}
     return render(request, 'hadesapp/main.html', context)
 
 
@@ -273,11 +278,12 @@ def game_page(request, slug):
     for key, percent in scores_by.items():
         if sum_of_scores['all_scores'] is not None:
             percent_of.update({key: round(percent / (voters / 100), 2)})
+    articles = game.articles.all()
     context = {
         'title': f'UGF | {game.name}', 'game': game, 'img_path': image.game_image,
         'trailers': trailers, 'scores_by': scores_by, 'already_voted': already_voted,
         'user_score': user_score, 'average_score': average_score, 'time': time, 'percent_of': percent_of,
-        'is_released': is_released, 'genres': genres_of_game, 'developer': developer
+        'is_released': is_released, 'genres': genres_of_game, 'developer': developer, 'articles': articles
 
     }
     return render(request, 'hadesapp/game_page.html', context)
@@ -414,7 +420,7 @@ def contact_us(request):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admins', 'custom_users'])
 def appeals(request):
-    appeals = Appeal.objects.order_by('-created_at')  # todo Sort by desc
+    appeals = Appeal.objects.order_by('-created_at')
     p = Paginator(appeals, 6)
     page = request.GET.get('page')
     appeals_pages = p.get_page(page)
@@ -434,3 +440,82 @@ def check_appeal(request, pk):
             appeal.save()
             return JsonResponse({'success': 'true', }, safe=False)
         return redirect('appeals')
+
+
+@login_required(login_url='login')
+def article_page(request, slug):
+    article = Article.objects.filter(slug=slug).first()
+    article_rate_up = ArticleRate.objects.filter(article_id=article.id, rating_type=True).count()
+    article_rate_down = ArticleRate.objects.filter(article_id=article.id, rating_type=False).count()
+    context = {
+        'article': article, 'title': article.name, 'ups': article_rate_up,
+        'downs': article_rate_down,
+    }
+    return render(request, 'hadesapp/article_page.html', context)
+
+
+@login_required(login_url='login')
+def create_article(request):
+    editor = ArticleForm()
+    if request.method == 'POST':
+        editor = ArticleForm(request.POST, request.FILES)
+        if editor.is_valid():
+            precommitted_editor = editor.save(commit=False)
+            precommitted_editor.user_id = request.user.id
+            precommitted_editor.save()
+            editor.save_m2m()
+            return redirect('main')
+    context = {
+        'editor': editor, 'title': "UGF | Article Creation",
+    }
+    return render(request, 'hadesapp/create_article.html', context)
+
+
+@login_required(login_url='login')
+def update_article(request, slug):
+    article = Article.objects.get(slug=slug)
+    editor = ArticleForm(instance=article)
+    if request.method == 'POST':
+        editor = ArticleForm(request.POST, request.FILES, instance=article)
+        if editor.is_valid():
+            precommitted_editor = editor.save(commit=False)
+            precommitted_editor.user_id = request.user.id
+            precommitted_editor.save()
+            editor.save_m2m()
+            return redirect('article_page', article.slug)
+    context = {
+        'editor': editor, 'title': "UGF | Article Edit",
+    }
+    return render(request, 'hadesapp/update_article.html', context)
+
+
+def article_rate(request):
+    check_type = 1
+
+    if int(request.POST.get('type')) == 1:
+        check_type = 0
+    check_rate = ArticleRate.objects.filter(rating_type=check_type, article_id=request.POST.get('article_id'),
+                                            user=request.user).first()
+
+    if check_rate:
+        check_rate.rating_type = int(request.POST.get('type'))
+        check_rate.save()
+        article_rate_up = ArticleRate.objects.filter(article_id=request.POST.get('article_id'),
+                                                     rating_type=True).count()
+        article_rate_down = ArticleRate.objects.filter(article_id=request.POST.get('article_id'),
+                                                       rating_type=False).count()
+        return JsonResponse(
+            {'success': 'true', 'article_rate_up': article_rate_up, 'article_rate_down': article_rate_down},
+            safe=False)
+    rate = ArticleRate(rating_type=request.POST.get('type'),
+                       article_id=request.POST.get('article_id'), user=request.user)
+    try:
+        status = rate.save()
+    except IntegrityError:
+        response = JsonResponse({'error': 'Already rated!'})
+        response.status_code = 400
+        return response
+    article_rate_up = ArticleRate.objects.filter(article_id=request.POST.get('article_id'), rating_type=True).count()
+    article_rate_down = ArticleRate.objects.filter(article_id=request.POST.get('article_id'), rating_type=False).count()
+    return JsonResponse({'success': 'true', 'article_rate_up': article_rate_up, 'article_rate_down': article_rate_down},
+                        safe=False)

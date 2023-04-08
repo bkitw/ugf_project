@@ -26,5 +26,10 @@ urlpatterns = [
     path('genres', views.genres, name='genres'),
     path('update_genre/<slug:slug>', views.update_genre, name='update_genre'),
     path('delete_genre/<slug:slug>', views.delete_genre, name='delete_genre'),
+    path('article/<slug:slug>', views.article_page, name='article_page'),
+    path('create_article', views.create_article, name='create_article'),
+    path('update_article/<slug:slug>', views.update_article, name='update_article'),
+    path('article_rate', views.article_rate, name='article_rate'),
+
 
 ]

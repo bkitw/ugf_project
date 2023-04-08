@@ -16,7 +16,34 @@ width:40%;
 margin: 1%;
 }
 
+.avatar {
+  vertical-align: middle;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
 
+.fr-fic.fr-dib {
+    float: left;
+    width:  100% !important;
+    object-fit: cover;
+}
+
+.fr-inner {
+    margin-left: 43% !important;
+}
+
+iframe {
+    width:100%;
+}
+
+.rate-button {
+    background:none;
+    border:none;
+    margin:0;
+    padding:0;
+    cursor: pointer;
+}
 /*.gotit:hover {
     background-color: yellow;
 }*/
