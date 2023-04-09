@@ -12,14 +12,14 @@
     {{ editor.media }}
 
 </head>
-<body>
+<body style="height:100vh">
 <!--Here goes the header-->
 {%include 'hadesapp/components/header_navbar.html'%}
 {%block content%}
 <!--Here goes main content-->
 {%endblock%}
 <!--Here goes footer-->
-<!--{%include 'hadesapp/components/footer.html'%}-->
+{%include 'hadesapp/components/footer.html'%}
 <!-- Modal Contact Us-->
 <div class="modal fade" id="contact-me-form" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -85,7 +85,6 @@
         </div>
     </div>
 </div>
-
 
 </body>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -173,4 +172,5 @@ $( document ).ready(function() {
 
 {%block add_js%}
 {%endblock%}
+
 </html>

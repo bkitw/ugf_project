@@ -535,7 +535,12 @@ def article_page(request, slug):
         article_id=article.id, rating_type=False
     ).count()
     related_games = article.games.all()
-    related_comments = ArticleComment.objects.filter(article=article, ).order_by('-created_at')
+    related_comments = ArticleComment.objects.filter(
+        article=article
+    ).order_by('-created_at')
+    p = Paginator(related_comments, 15)
+    page = request.GET.get("page")
+    comments_pages = p.get_page(page)
     context = {
         "article": article,
         "title": article.name,
@@ -543,6 +548,7 @@ def article_page(request, slug):
         "downs": article_rate_down,
         "related_games": related_games,
         "related_comments": related_comments,
+        "comments_pages": comments_pages,
     }
     return render(request, "hadesapp/article_page.html", context)
 

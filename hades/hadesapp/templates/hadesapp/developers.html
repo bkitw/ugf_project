@@ -5,86 +5,87 @@
 <h1>Devs_page</h1>
 
 <div class="container text-center">
-    <div class="row">
-        {%if hidden%}
-        <div class="col" hidden="">
-            {%else%}
-            <div class="col">
-                {%endif%}
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th scope="col">Developer</th>
-                        {%if request.user.is_staff%}
-                        <th scope="col">Update</th>
-                        <th scope="col">Delete</th>
-                        {%endif%}
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {%for dev in devs_pages%}
-                    <tr>
-                        <td>{{dev}}</td>
-                        {%if request.user.is_staff%}
-                        <td><a href="{%url 'update_developer' dev.slug %}">update</a></td>
-                        <td><a href="{%url 'delete_developer' dev.slug %}">delete</a></td>
-                        {%endif%}
-                    </tr>
-                    {%endfor%}
-                    </tbody>
-                </table>
-                <!--pagination-->
-
-                <br/>
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-center nav nav-pills">
-                        {% if devs_pages.has_previous %}
-                        <li class="page-item">
-                            <a class="page-link" href="?{% url_replace request 'page' 1%}">
-                                <<
-                            </a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link"
-                               href="?{% url_replace request 'page' devs_pages.previous_page_number%}">
-                                <
-                            </a>
-                        </li>
-                        {% endif %}
-
-                        {% for number in devs_pages.paginator.page_range %}
-                        <li class="page-item {%if devs_pages.number == number %} active {%endif%}"><a class="page-link" href="?{% url_replace request 'page' number%}">
-                            {{number}}
-                        </a>
-                        </li>
-                        {% endfor %}
-                        {% if devs_pages.has_next %}
-                        <li class="page-item">
-                            <a class="page-link" href="?{% url_replace request 'page' devs_pages.next_page_number%}">> </a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link"
-                               href="?{% url_replace request 'page' devs_pages.paginator.num_pages%}">>></a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                </nav>
-            </div>
-
-            {%if request.user.is_staff%}
-            <div class="col">
-                <form method="post" action="">
-                    {%csrf_token%}
-                    {% for form in form%}
-                    <ul class="list-group">
-                        <li class="list-group-item">{{form.label}}: {{form}}</li>
-                    </ul>
-                    {%endfor%}
-                    <input type="submit" name="Submit">
-                </form>
-            </div>
+    <div class="row grid">
+    {%if hidden%}
+    <div class="col" hidden="">
+        {%else%}
+        <div class="col">
             {%endif%}
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Developer</th>
+                    {%if request.user.is_staff%}
+                    <th scope="col">Update</th>
+                    <th scope="col">Delete</th>
+                    {%endif%}
+                </tr>
+                </thead>
+                <tbody>
+                {%for dev in devs_pages%}
+                <tr>
+                    <td>{{dev}}</td>
+                    {%if request.user.is_staff%}
+                    <td><a href="{%url 'update_developer' dev.slug %}">update</a></td>
+                    <td><a href="{%url 'delete_developer' dev.slug %}">delete</a></td>
+                    {%endif%}
+                </tr>
+                {%endfor%}
+                </tbody>
+            </table>
+            <!--pagination-->
+
+            <br/>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center nav nav-pills">
+                    {% if devs_pages.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?{% url_replace request 'page' 1%}">
+                            <<
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link"
+                           href="?{% url_replace request 'page' devs_pages.previous_page_number%}">
+                            <
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    {% for number in devs_pages.paginator.page_range %}
+                    <li class="page-item {%if devs_pages.number == number %} active {%endif%}"><a class="page-link"
+                                                                                                  href="?{% url_replace request 'page' number%}">
+                        {{number}}
+                    </a>
+                    </li>
+                    {% endfor %}
+                    {% if devs_pages.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?{% url_replace request 'page' devs_pages.next_page_number%}">> </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link"
+                           href="?{% url_replace request 'page' devs_pages.paginator.num_pages%}">>></a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
         </div>
+
+        {%if request.user.is_staff%}
+        <div class="col">
+            <form method="post" action="">
+                {%csrf_token%}
+                {% for form in form%}
+                <ul class="list-group">
+                    <li class="list-group-item">{{form.label}}: {{form}}</li>
+                </ul>
+                {%endfor%}
+                <input type="submit" name="Submit">
+            </form>
+        </div>
+        {%endif%}
     </div>
+</div>
 </div>
 {%endblock%}
