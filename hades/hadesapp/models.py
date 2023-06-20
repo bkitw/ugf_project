@@ -89,7 +89,7 @@ class CustomUser(AbstractUser):
         null=True,
         blank=True,
         upload_to=profile_pic_directory_path,
-        default="/images/defaults/profile_pic/default_logo.png",
+        default="/images/defaults/profile_pic/default_avatar.png",
     )
     followers = models.ManyToManyField(
         "self", related_name="followed_by", symmetrical=False, blank=True

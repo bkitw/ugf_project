@@ -1,15 +1,35 @@
+html, body {
+    min-height: 100vh;
+  }
+
 body {
+height: inherit;
 min-width:320px;
 font-size:14px;
 font-family: 'Play', sans-serif;
-color:#626262
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
+color:#000000;
+display: flex;
+flex-direction: column;
+background-color: #F4D03F;
+background-image: linear-gradient(132deg, #F4D03F 0%, #16A085 100%);
+
+
+
+
 }
 
+.header {
+    background-color: #FFDEE9;
+background-image: linear-gradient(0deg, #FFDEE9 0%, #B5FFFC 100%);
+-webkit-box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.75);
+-moz-box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.75);
+box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.75);
+
+}
 footer{
     margin-top: auto;
+    background-color: #FFDEE9;
+background-image: linear-gradient(0deg, #FFDEE9 0%, #B5FFFC 100%);
 }
 .reg-forms{
 width:40%;
@@ -44,6 +64,8 @@ iframe {
     padding:0;
     cursor: pointer;
 }
+
+
 /*.gotit:hover {
     background-color: yellow;
 }*/

@@ -23,11 +23,16 @@ from django.db.models import Sum, Max, Avg
 from decimal import *
 from django.db.models.functions import Round
 from django.db.utils import IntegrityError
-
+import requests
+from django.views.decorators.cache import cache_page
+from django.core.cache.backends.base import DEFAULT_TIMEOUT
+from django.core.cache import cache
 
 # Create your views here.
+# CACHE_TTL = getattr(settings, "CACHE_TTL", DEFAULT_TIMEOUT)
 
 
+# @cache_page(CACHE_TTL)
 @login_required(login_url="login")
 def main(request):
     this_month = datetime.now().date()
@@ -42,11 +47,26 @@ def main(request):
         .order_by("-avg_score")
         .all()[:3]
     )
+    # redis a little
+    # key = 'data_from_api'
+    # if cache.has_key(key):
+    #     data = cache.get(key)
+    # else:
+    #     res = requests.get("https://www.boredapi.com/api/activity")
+    #     data = res.json()
+    #     cache.set(key, data, 5)
+    res = requests.get("https://www.boredapi.com/api/activity")
+    data = res.json()
     articles = Article.objects.order_by("-created_at")
     p = Paginator(articles, 20)
     page = request.GET.get("page")
     articles_pages = p.get_page(page)
-    context = {"title": "UGF | Home", "games": games, "articles": articles_pages}
+    context = {
+        "title": "UGF | Home",
+        "games": games,
+        "articles": articles_pages,
+        "data": data,
+    }
     return render(request, "hadesapp/main.html", context)
 
 
@@ -410,10 +430,10 @@ def update_user_profile(request, pk):
             )
             try:
                 if (
-                        str(filename).endswith(
-                            "\\images\\defaults\\profile_pic\\default_logo.png"
-                        )
-                        or picture_for_delete == user.profile_pic
+                    str(filename).endswith(
+                        "\\images\\defaults\\profile_pic\\default_avatar.png"
+                    )
+                    or picture_for_delete == user.profile_pic
                 ):
                     pass
                 else:
@@ -535,7 +555,12 @@ def article_page(request, slug):
         article_id=article.id, rating_type=False
     ).count()
     related_games = article.games.all()
-    related_comments = ArticleComment.objects.filter(article=article, ).order_by('-created_at')
+    related_comments = ArticleComment.objects.filter(article=article).order_by(
+        "-created_at"
+    )
+    p = Paginator(related_comments, 15)
+    page = request.GET.get("page")
+    comments_pages = p.get_page(page)
     context = {
         "article": article,
         "title": article.name,
@@ -543,6 +568,7 @@ def article_page(request, slug):
         "downs": article_rate_down,
         "related_games": related_games,
         "related_comments": related_comments,
+        "comments_pages": comments_pages,
     }
     return render(request, "hadesapp/article_page.html", context)
 
@@ -640,19 +666,19 @@ def article_rate(request):
 
 
 def add_comment(request):
-    if request.POST.get('comment') == '' or request.POST.get('comment') is None:
+    if request.POST.get("comment") == "" or request.POST.get("comment") is None:
         response = JsonResponse({"error": "Empty field!"})
         response.status_code = 400
-        print('no')
-        print(request.POST.get('comment'))
+        print("no")
+        print(request.POST.get("comment"))
         return response
     comment = ArticleComment(
-        article_id=request.POST.get('article_id'),
+        article_id=request.POST.get("article_id"),
         user=request.user,
-        content=request.POST.get('comment')
+        content=request.POST.get("comment"),
     )
-    print('yes')
-    print(request.POST.get('comment'))
+    print("yes")
+    print(request.POST.get("comment"))
     comment.save()
     return JsonResponse(
         {

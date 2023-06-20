@@ -86,5 +86,5 @@ def profile_pic(user):
     if user.profile_pic:
         filepath = user.profile_pic
     else:
-        filepath = "/images/defaults/profile_pic/default_logo.png"
+        filepath = "images/defaults/profile_pic/default_avatar.png"
     return filepath

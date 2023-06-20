@@ -22,5 +22,5 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('hadesapp.urls')),
-    path(r'^froala_editor/', include('froala_editor.urls')),
+    path(r'froala_editor/', include('froala_editor.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
