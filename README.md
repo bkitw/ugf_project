@@ -1,7 +1,7 @@
 Hello! And thank you for your attention to my project. The name "hades" is a name left over from the prototype stage and does not play a significant role.
 This is my pet-project.# hades_for_deploy
 This application, written in Python using the Django framework, is a pet project of a junior developer, created to show my abilities, potential and experience. Keep in mind that the project is still a work in progress and the moment when it will be perfect enough to be considered complete has not yet been determined.
-For Django Admin user use credentials: 330022 as password, UserSuper as login
+
 The application is a blog site for creating articles on the subject of video games. Although a potential user has the opportunity to write articles on neutral topics.
 A demo, non-commercial version is available on Dockerhub at the link below:
 
