@@ -41,7 +41,7 @@
                             {%endfor%}
                         </ul>
                     </div>
-                    <div class="col-3">
+                    <div class="col-3" {%if request.user.username == article.user.username %} {%else%} hidden {%endif%}>
                         <a class="btn btn-warning float-end" href="{%url 'update_article' article.slug%}"
                            role="button">Edit</a>
                     </div>

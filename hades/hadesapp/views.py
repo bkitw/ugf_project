@@ -606,8 +606,17 @@ def update_article(request, slug):
     context = {
         "editor": editor,
         "title": "UGF | Article Edit",
+        "article" : article,
     }
     return render(request, "hadesapp/update_article.html", context)
+
+@login_required(login_url="login")
+def delete_article(request, slug):
+    article = Article.objects.get(slug=slug)
+    article.delete()
+
+    return redirect("main")
+
 
 
 def article_rate(request):
