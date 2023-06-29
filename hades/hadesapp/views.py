@@ -558,7 +558,7 @@ def article_page(request, slug):
     related_comments = ArticleComment.objects.filter(article=article).order_by(
         "-created_at"
     )
-    p = Paginator(related_comments, 15)
+    p = Paginator(related_comments, 10)
     page = request.GET.get("page")
     comments_pages = p.get_page(page)
     context = {
@@ -613,7 +613,8 @@ def update_article(request, slug):
 @login_required(login_url="login")
 def delete_article(request, slug):
     article = Article.objects.get(slug=slug)
-    article.delete()
+    if request.method == "POST":
+        article.delete()
 
     return redirect("main")
 

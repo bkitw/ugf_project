@@ -58,12 +58,15 @@
                     </div>
                 </div>
 
-                <div class="text-end">
+                <div class="text-end d-flex">
                     <button type="submit" class="btn btn-success m-2">POST!</button>
-                    <a class="btn btn-danger" href="{%url 'delete_article' article.slug%}" role="button">DELETE!</a>
+                </form>
+                <form action="{%url 'delete_article' article.slug%}" method="POST">
+                    {%csrf_token%}
+                    <button type="submit" class="btn btn-danger m-2">DELETE!</button>
+                </form>
                 </div>
             </fieldset>
-        </form>
     </div>
 </section>
 

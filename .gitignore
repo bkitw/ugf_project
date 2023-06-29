@@ -186,3 +186,5 @@ fabric.properties
 
 /hades/static/media/*
 *.sqlite
+hades/hades_db.sqlite
+.vscode/settings.json

@@ -10,12 +10,14 @@
     <div class="col-10 mx-auto article">
         <div class="card m-2 ">
             <div class="card-body">
-                <div class="row"><h5 class="card-title"><strong>{{article|title}}</strong></h5></div>
+                <div class="row">
+                    <h5 class="card-title"><strong>{{article|title}}</strong></h5>
+                </div>
                 <hr>
                 <div class="toast-header">
                     <strong class="me-auto"><a class="nav-link" href="{%url 'user_profile' article.user.username%}"><img
-                            src="{%static 'media'%}/{{article.user.profile_pic}}" alt="userpic"
-                            class="avatar avatar-sm me-3 border-radius-lg"><b>{{article.user.username}}</b></a></strong>
+                                src="{%static 'media'%}/{{article.user.profile_pic}}" alt="userpic"
+                                class="avatar avatar-sm me-3 border-radius-lg"><b>{{article.user.username}}</b></a></strong>
                     <small class="text-body-secondary"><i>{{article.created_at|format_datetime}}</i></small>
                 </div>
                 <hr>
@@ -24,13 +26,14 @@
                 <div class="card-footer bg-transparent border-info row">
                     <div class="col-3">
                         <button class="rate-button" role="button" data-article-id="{{article.id}}" title="Rate this up!"
-                                id="ups"><h4>&#10169;</h4>
+                            id="ups">
+                            <h4>&#10169;</h4>
                             <span class="badge text-bg-secondary">{{ups}}</span>
                         </button>
                         <span> | </span>
                         <button class="rate-button" role="button" data-article-id="{{article.id}}"
-                                title="Rate this down!"
-                                id="downs"><h4>&#10167;</h4>
+                            title="Rate this down!" id="downs">
+                            <h4>&#10167;</h4>
                             <span class="badge text-bg-secondary">{{downs}}</span>
                         </button>
                     </div>
@@ -41,9 +44,9 @@
                             {%endfor%}
                         </ul>
                     </div>
-                    <div class="col-3" {%if request.user.username == article.user.username %} {%else%} hidden {%endif%}>
+                    <div class="col-3" {%if request.user.username == article.user.username%} {%else%} hidden {%endif%}>
                         <a class="btn btn-warning float-end" href="{%url 'update_article' article.slug%}"
-                           role="button">Edit</a>
+                            role="button">Edit</a>
                     </div>
                 </div>
             </div>
@@ -54,8 +57,7 @@
                     <div style="display:none" class="alert alert-info warning">You can't send empty commentary.</div>
                     <textarea class="form-control comment-area"></textarea>
                     <button class="float-end mt-2 mb-2 send-comment btn btn-info" role='button'
-                            data-article-id="{{article.id}}"
-                            id="send_comment">Comment!
+                        data-article-id="{{article.id}}" id="send_comment">Comment!
                     </button>
                 </div>
                 <div class="comments" id="comments">
@@ -64,9 +66,9 @@
                         <div class="card-header">
                             <div class="toast-header">
                                 <strong class="me-auto"><a class="nav-link"
-                                                           href="{%url 'user_profile' comment.user.username%}"><img
-                                        src="{%static 'media'%}/{{comment.user.profile_pic}}" alt="userpic"
-                                        class="avatar avatar-sm me-3 border-radius-lg"><b>{{comment.user.username}}</b></a></strong>
+                                        href="{%url 'user_profile' comment.user.username%}"><img
+                                            src="{%static 'media'%}/{{comment.user.profile_pic}}" alt="userpic"
+                                            class="avatar avatar-sm me-3 border-radius-lg"><b>{{comment.user.username}}</b></a></strong>
                                 <small class="text-body-secondary"><i>{{comment.created_at|format_datetime}}</i></small>
                             </div>
                         </div>
@@ -81,47 +83,49 @@
     </div>
     <nav class="m-4" aria-label="Page navigation">
         <ul class="pagination justify-content-center nav nav-pills">
-            {% if comments_pages.has_previous %}
+            <!-- {% if comments_pages.has_previous %}
             <li class="page-item">
                 <a class="page-link" href="?{% url_replace request 'page' 1%}">
-                    <strong><<</strong>
+                    <strong>
+                        << </strong>
                 </a>
             </li>
             <li class="page-item">
-                <a class="page-link"
-                   href="?{% url_replace request 'page' pages.previous_page_number%}">
-                    <strong><</strong>
+                <a class="page-link" href="?{% url_replace request 'page' pages.previous_page_number%}">
+                    <strong>
+                        < </strong>
                 </a>
             </li>
             {% else %}
             <li class="page-item disabled" hidden>
                 <a class="page-link">Previous</a>
             </li>
-            {% endif %}
+            {% endif %} -->
 
             {% for number in comments_pages.paginator.page_range %}
-            <li class="page-item {%if pages.number == number %} active {%endif%}">
+            <li class="page-item {%if pages.number == number %} active {%endif%}" >
+            <!-- {%if not comments_pages.has_next and not number == comments_pages.paginator.page_range|length %} hidden {%endif%} -->
                 <a class="page-link" href="?{% url_replace request 'page' number%}">
                     {{number}}
                 </a>
             </li>
             {% endfor %}
-            {% if comments_pages.has_next %}
+            <!-- {% if comments_pages.has_next %}
             <li class="page-item">
                 <a class="page-link"
-                   href="?{% url_replace request 'page' pages.next_page_number%}"><strong>></strong>
+                    href="?{% url_replace request 'page' comments_pages.next_page_number%}"><strong>></strong>
                 </a>
             </li>
             <li class="page-item">
                 <a class="page-link"
-                   href="?{% url_replace request 'page' pages.paginator.num_pages%}"><strong>>></strong></a>
+                    href="?{% url_replace request 'page' comments_pages.paginator.num_pages%}"><strong>>></strong></a>
             </li>
             {% else %}
             <li class="page-item disabled" hidden>
                 <a class="page-link" href="#"><strong>></strong></a>
             </li>
             {% endif %}
-        </ul>
+        </ul> -->
     </nav>
 </section>
 
@@ -131,59 +135,59 @@
 
 <script>
 
-    $( document ).ready(function() {
-    console.log( "ready!" );
+    $(document).ready(function () {
+        console.log("ready!");
 
-    $("button.rate-button").on("click", function(e){
-        let laButton = $(this);
-        let type;
-        if (laButton.attr('id') === 'ups') {
-            type = 1;
-        } else if (laButton.attr('id') === 'downs') {
-            type = 0;
-        }
-        let data = {
-            'article_id': laButton.attr('data-article-id'),
-            'type': type,
-            'csrfmiddlewaretoken': '{{csrf_token}}',
-        }
-        console.log(data)
-        $.ajax({
-            type: 'POST',
-            data: data,
-            url: '/article_rate',
-            success: function (result) {
-                $('#ups').children('span').html(result.article_rate_up);
-                $('#downs').children('span').html(result.article_rate_down);
-            },
-            error: function (xhr) {
-                alert("Already voted!");
+        $("button.rate-button").on("click", function (e) {
+            let laButton = $(this);
+            let type;
+            if (laButton.attr('id') === 'ups') {
+                type = 1;
+            } else if (laButton.attr('id') === 'downs') {
+                type = 0;
             }
+            let data = {
+                'article_id': laButton.attr('data-article-id'),
+                'type': type,
+                'csrfmiddlewaretoken': '{{csrf_token}}',
+            }
+            console.log(data)
+            $.ajax({
+                type: 'POST',
+                data: data,
+                url: '/article_rate',
+                success: function (result) {
+                    $('#ups').children('span').html(result.article_rate_up);
+                    $('#downs').children('span').html(result.article_rate_down);
+                },
+                error: function (xhr) {
+                    alert("Already voted!");
+                }
             });
         });
-    $('button#send_comment').on('click', function(e){
-        let sendButton = $(this);
-        let data = {
-            'article_id': sendButton.attr('data-article-id'),
-            'comment': $('textarea.comment-area').val(),
-            'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val(),
-        }
-
-        $.ajax({
-            type: 'POST',
-            data: data,
-            url: '/add_comment',
-            success: function (result){
-                $('#comments').load(' #comments');
-                $('.warning').hide();
-                $('textarea.comment-area').val("");
-            },
-            error: function (result){
-                $('.warning').show();
+        $('button#send_comment').on('click', function (e) {
+            let sendButton = $(this);
+            let data = {
+                'article_id': sendButton.attr('data-article-id'),
+                'comment': $('textarea.comment-area').val(),
+                'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val(),
             }
+
+            $.ajax({
+                type: 'POST',
+                data: data,
+                url: '/add_comment',
+                success: function (result) {
+                    $('#comments').load(' #comments');
+                    $('.warning').hide();
+                    $('textarea.comment-area').val("");
+                },
+                error: function (result) {
+                    $('.warning').show();
+                }
+            })
         })
     })
-})
 
 
 
