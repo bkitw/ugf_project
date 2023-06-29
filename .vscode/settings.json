@@ -1,0 +1,7 @@
+{
+    "html.format.enable": true,
+    "editor.defaultFormatter": "FallenMax.mithril-emmet",
+    "[html]": {
+        "editor.defaultFormatter": "vscode.html-language-features"
+    }
+}
