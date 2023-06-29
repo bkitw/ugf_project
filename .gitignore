@@ -185,4 +185,4 @@ fabric.properties
 .idea
 
 /hades/static/media/*
-*.sqlite
+.sqlite
